@@ -109,10 +109,10 @@ const Navbar = () => {
   );
 
   return (
-    <div className="bg-base-100 shadow-sm py-2">
+    <nav className="bg-base-100 shadow-sm py-2">
       <div className="navbar w-11/12 mx-auto">
         <div className="navbar-start">
-          {/* Mobile menu */}
+          
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
               <svg
@@ -139,7 +139,7 @@ const Navbar = () => {
             </ul>
           </div>
 
-          {/* Logo */}
+          
           <Link to="/" className="flex items-center space-x-2">
             <img
               src={logo}
@@ -152,16 +152,16 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Desktop links */}
+        
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 space-x-2">{links}</ul>
         </div>
 
-        {/* User actions */}
+        
         <div className="navbar-end flex items-center gap-4">
           {user ? (
             <div className="flex items-center gap-4">
-              {/* Avatar */}
+              
               <div className="dropdown dropdown-end">
                 <div tabIndex={0} role="button" className="avatar">
                   <div className="w-12 border-2 border-gray-300 rounded-full">
@@ -176,7 +176,7 @@ const Navbar = () => {
                   </div>
                 </div>
 
-                {/* Dropdown content */}
+                
                 <ul
                   tabIndex={-1}
                   className="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-56 p-2 shadow"
@@ -185,7 +185,7 @@ const Navbar = () => {
                   <li className="text-xs border-b-2 pb-1">{user.email}</li>
                   <li className="text-xs mt-2">Profile</li>
                   <li className="text-xs pb-4 mt-1">Setting</li>
-                  {/* Mobile Logout */}
+                  
                   <button
                     onClick={signOut}
                     className="btn rounded-full btn-outline hover:text-white hover:bg-[#092052] text-amber-400 bg-white md:py-5 md:px-5 hover:scale-105 md:hidden"
@@ -216,7 +216,7 @@ const Navbar = () => {
         </div>
       </div>
       <Toaster position="top-center" reverseOrder={false} />
-    </div>
+    </nav>
   );
 };
 
