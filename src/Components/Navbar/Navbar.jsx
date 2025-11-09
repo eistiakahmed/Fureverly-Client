@@ -17,15 +17,15 @@ import toast, { Toaster } from 'react-hot-toast';
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
 
-  const signOut = () => { 
-     logOut()
-       .then(() => {
-         toast.success('Logged out successfully!');
-       })
-       .catch((err) => {
-         toast.error(err.message);
-       });
-  }
+  const signOut = () => {
+    logOut()
+      .then(() => {
+        toast.success('Logged out successfully!');
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
 
   const links = (
     <>
@@ -158,34 +158,48 @@ const Navbar = () => {
         </div>
 
         {/* User actions */}
-        <div className="navbar-end">
+        <div className="navbar-end flex items-center gap-4">
           {user ? (
-            <div className="dropdown dropdown-end z-50 flex gap-5 items-center">
-              <div tabIndex={0} role="button" className=" btn-ghost  avatar">
-                <div className="w-12 border-2 border-gray-300 rounded-full">
-                  <img
-                    alt="Tailwind CSS Navbar component"
-                    referrerPolicy="no-referrer"
-                    src={
-                      user.photoURL ||
-                      'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
-                    }
-                  />
+            <div className="flex items-center gap-4">
+              {/* Avatar */}
+              <div className="dropdown dropdown-end">
+                <div tabIndex={0} role="button" className="avatar">
+                  <div className="w-12 border-2 border-gray-300 rounded-full">
+                    <img
+                      alt="User avatar"
+                      referrerPolicy="no-referrer"
+                      src={
+                        user.photoURL ||
+                        'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
+                      }
+                    />
+                  </div>
                 </div>
-              </div>
-              <ul
-                tabIndex="-1"
-                className="menu menu-sm dropdown-content bg-base-100 z-50 mt-52 w-56 p-2 shadow"
-              >
-                <li className="font-bold">{user.displayName}</li>
-                <li className="text-xs border-b-2 pb-1">{user.email}</li>
-                <li className="text-xs mt-2">Profile</li>
-                <li className="text-xs pb-4 mt-1"> Sitting</li>
-              </ul>
 
+                {/* Dropdown content */}
+                <ul
+                  tabIndex={-1}
+                  className="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-56 p-2 shadow"
+                >
+                  <li className="font-bold">{user.displayName}</li>
+                  <li className="text-xs border-b-2 pb-1">{user.email}</li>
+                  <li className="text-xs mt-2">Profile</li>
+                  <li className="text-xs pb-4 mt-1">Setting</li>
+                  {/* Mobile Logout */}
+                  <button
+                    onClick={signOut}
+                    className="btn rounded-full btn-outline hover:text-white hover:bg-[#092052] text-amber-400 bg-white md:py-5 md:px-5 hover:scale-105 md:hidden"
+                  >
+                    <LogOut />
+                    Logout
+                  </button>
+                </ul>
+              </div>
+
+              {/* Desktop Logout */}
               <button
                 onClick={signOut}
-                className="btn rounded-full btn-outline hover:text-white hover:bg-[#092052] text-amber-400 bg-white md:py-5 md:px-5 hover:scale-105"
+                className="btn rounded-full btn-outline hover:text-white hover:bg-[#092052] text-amber-400 bg-white md:py-5 md:px-5 hover:scale-105 hidden md:flex items-center gap-2"
               >
                 <LogOut />
                 Logout
