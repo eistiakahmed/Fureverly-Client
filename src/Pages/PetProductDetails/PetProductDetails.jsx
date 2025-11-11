@@ -50,7 +50,7 @@ const PetProductDetails = () => {
       additionalNotes: e.target.notes.value,
     };
 
-    console.log(formatDate);
+    // console.log(formatDate);
 
     fetch('http://localhost:3000/orders', {
       method: 'POST',

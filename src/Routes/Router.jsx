@@ -8,6 +8,8 @@ import PrivateRoutes from '../Private/PrivateRoutes';
 import PetProductDetails from '../Pages/PetProductDetails/PetProductDetails';
 import CategoryFilteredProduct from '../Pages/CategoryFilteredProduct/CategoryFilteredProduct';
 import AddListingPage from '../Pages/AddListingPage/AddListingPage';
+import MyListing from '../Pages/MyListing/MyListing';
+import UpdateListing from '../Pages/UpdateListing/UpdateListing';
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +44,24 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoutes>
             <AddListingPage />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: '/myListings',
+        element: (
+          <PrivateRoutes>
+            <MyListing />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: '/updateListing/:id',
+        loader: ({ params }) =>
+          fetch(`http://localhost:3000/product/${params.id}`),
+        element: (
+          <PrivateRoutes>
+            <UpdateListing />
           </PrivateRoutes>
         ),
       },

@@ -46,7 +46,7 @@ const PetsAndSupplies = () => {
       <title>Fureverly | Pets & Supplies</title>
 
       <div className="text-center pt-24 pb-12">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-[#092052] mb-4 animate-fadeIn">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-[#092052] mb-4 animate-fadeIn YesevaOne">
           Pets & Supplies
         </h1>
         <p className="text-gray-500 text-lg md:text-xl max-w-2xl mx-auto animate-fadeIn delay-150">

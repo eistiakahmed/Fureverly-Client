@@ -1,13 +1,16 @@
 import React, { use, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
 import { AuthContext } from '../../Context/AuthContext';
+import { useLoaderData, useNavigate } from 'react-router';
+import toast, { Toaster } from 'react-hot-toast';
 
-const AddListingPage = () => {
-  const { user } = use(AuthContext);
+const UpdateListing = () => {
+  const data = useLoaderData()
+  const {user} = use(AuthContext)
   const [category, setCategory] = useState('Pets');
+  const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = e => { 
+    e.preventDefault()
 
     const name = e.target.name.value;
     const category = e.target.category.value;
@@ -18,47 +21,48 @@ const AddListingPage = () => {
     const date = e.target.date.value;
     const email = e.target.email.value;
 
-    
-    if (category !== 'Pets' && (!Price || Price <= 0)) {
-      return toast.error('Please enter a valid price for this category');
-    }
 
-    const formatData = {
-      name,
-      category,
-      Price,
-      location,
-      description,
-      image,
-      date,
-      email,
-    };
+     const formatData = {
+       name,
+       category,
+       Price,
+       location,
+       description,
+       image,
+       date,
+       email,
+     };
 
-    fetch('http://localhost:3000/product', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formatData),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        toast.success(
-          'Listing added successfully! Your pet/product is now live.'
-        );
-        e.target.reset();
-        setCategory('Pets');
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error('Error adding listing');
-      });
-  };
+
+     fetch(`http://localhost:3000/product/${data._id}`,{ 
+      method: 'PUT',
+      headers: {
+        "Content-type": "application/json"
+      },
+      body: JSON.stringify(formatData)
+     })
+     .then(res => res.json())
+     .then(data => { 
+      console.log(data)
+       toast.success('Successfully updated!');
+       navigate('/myListings');
+     })
+     .catch(err => { 
+      console.log(err)
+     })
+
+  }
+
+  // delete Method
+  
+
+
 
   return (
     <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-xl my-16">
       <Toaster />
       <h2 className="text-4xl font-extrabold mb-6 text-center text-[#092052] YesevaOne">
-        Add New Listing
+        Update Listing
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-5">
@@ -156,11 +160,11 @@ const AddListingPage = () => {
           type="submit"
           className="w-full p-3 rounded-lg border-2 border-[#092052] text-[#092052] font-semibold hover:bg-[#092052] hover:text-white transition duration-300"
         >
-          Add Listing
+          Update Listing
         </button>
       </form>
     </div>
   );
 };
 
-export default AddListingPage;
+export default UpdateListing;
