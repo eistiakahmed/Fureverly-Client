@@ -16,7 +16,16 @@ const Login = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    console.log({ email, password });
+    // console.log({ email, password });
+
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+
+    if (!passwordPattern.test(password)) {
+      toast.error(
+        'Password must include at least 1 uppercase, 1 lowercase letter, and be 6+ characters long.'
+      );
+      return;
+    } 
 
     signInUser(email, password)
       .then((res) => {
@@ -48,7 +57,6 @@ const Login = () => {
       <title>Fureverly | Login</title>
 
       <div className="bg-white rounded-3xl shadow-xl flex flex-col md:flex-row w-full max-w-5xl overflow-hidden border border-gray-200">
-        
         <div className="md:w-1/2 w-full bg-linear-to-br from-[#FCDFA3] to-[#F7C568] p-10 relative flex flex-col justify-center items-center text-center">
           <h2 className="text-3xl font-extrabold text-gray-800 mb-2">
             Welcome to Fureverly
@@ -62,12 +70,10 @@ const Login = () => {
             className="w-60 sm:w-72 mx-auto drop-shadow-lg"
           />
 
-          
           <div className="absolute top-6 left-6 w-6 h-6 bg-white rounded-full shadow hidden md:block"></div>
           <div className="absolute bottom-10 right-8 w-5 h-5 border rounded-full shadow-sm hidden md:block"></div>
         </div>
 
-        
         <div className="md:w-1/2 w-full bg-white p-8 sm:p-10 flex flex-col justify-center">
           <h3 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-6 text-center md:text-left">
             Login
@@ -107,7 +113,6 @@ const Login = () => {
             </button>
           </form>
 
-          
           <div className="flex items-center gap-3 my-6">
             <span className="w-full h-px bg-gray-300"></span>
             <span className="text-xs text-gray-500">or</span>
