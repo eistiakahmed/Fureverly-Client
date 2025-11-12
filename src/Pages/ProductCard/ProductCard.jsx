@@ -4,10 +4,10 @@ import { Link } from 'react-router';
 
 
 const ProductCard = ({ product }) => {
-  console.log(product._id)
+  // console.log(product._id)
   return (
-    <div className="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group p-5">
-      <div className="relative w-full h-[280px] overflow-hidden rounded-t-3xl">
+    <div className="bg-white   rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
+      <div className="relative w-full h-[330px] overflow-hidden rounded-t-3xl">
         <img
           src={product.image}
           alt={product.name}

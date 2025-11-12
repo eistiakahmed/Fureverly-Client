@@ -10,6 +10,7 @@ import CategoryFilteredProduct from '../Pages/CategoryFilteredProduct/CategoryFi
 import AddListingPage from '../Pages/AddListingPage/AddListingPage';
 import MyListing from '../Pages/MyListing/MyListing';
 import UpdateListing from '../Pages/UpdateListing/UpdateListing';
+import MyOrders from '../Pages/MyOrders/MyOrders';
 
 export const router = createBrowserRouter([
   {
@@ -62,6 +63,14 @@ export const router = createBrowserRouter([
         element: (
           <PrivateRoutes>
             <UpdateListing />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: '/myOrders',
+        element: (
+          <PrivateRoutes>
+            <MyOrders />
           </PrivateRoutes>
         ),
       },
