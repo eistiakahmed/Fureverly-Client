@@ -4,13 +4,13 @@ import { useLoaderData, useNavigate } from 'react-router';
 import toast, { Toaster } from 'react-hot-toast';
 
 const UpdateListing = () => {
-  const data = useLoaderData()
-  const {user} = use(AuthContext)
+  const data = useLoaderData();
+  const { user } = use(AuthContext);
   const [category, setCategory] = useState('Pets');
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const handleSubmit = e => { 
-    e.preventDefault()
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
     const name = e.target.name.value;
     const category = e.target.category.value;
@@ -21,42 +21,36 @@ const UpdateListing = () => {
     const date = e.target.date.value;
     const email = e.target.email.value;
 
+    const formatData = {
+      name,
+      category,
+      Price,
+      location,
+      description,
+      image,
+      date,
+      email,
+    };
 
-     const formatData = {
-       name,
-       category,
-       Price,
-       location,
-       description,
-       image,
-       date,
-       email,
-     };
-
-
-     fetch(`http://localhost:3000/product/${data._id}`,{ 
+    fetch(`https://fureverly-server.vercel.app/product/${data._id}`, {
       method: 'PUT',
       headers: {
-        "Content-type": "application/json"
+        'Content-type': 'application/json',
       },
-      body: JSON.stringify(formatData)
-     })
-     .then(res => res.json())
-     .then(data => { 
-      console.log(data)
-       toast.success('Successfully updated!');
-       navigate('/myListings');
-     })
-     .catch(err => { 
-      console.log(err)
-     })
-
-  }
+      body: JSON.stringify(formatData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        toast.success('Successfully updated!');
+        navigate('/myListings');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   // delete Method
-  
-
-
 
   return (
     <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-xl my-16">

@@ -21,13 +21,12 @@ const PetsAndSupplies = () => {
     const search_text = e.target.search.value.trim();
 
     if (!search_text) {
-      
       setProducts(data);
       return;
     }
 
     setLoading(true);
-    fetch(`http://localhost:3000/search?search=${search_text}`)
+    fetch(`https://fureverly-server.vercel.app/search?search=${search_text}`)
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
@@ -38,7 +37,7 @@ const PetsAndSupplies = () => {
         setLoading(false);
       });
 
-    e.target.reset(); 
+    e.target.reset();
   };
 
   return (

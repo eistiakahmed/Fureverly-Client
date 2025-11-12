@@ -14,6 +14,7 @@ import { FaHome } from 'react-icons/fa';
 import { MdOutlinePets } from 'react-icons/md';
 import toast, { Toaster } from 'react-hot-toast';
 
+
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
 
@@ -112,7 +113,6 @@ const Navbar = () => {
     <nav className="bg-base-100 shadow-sm py-2">
       <div className="navbar w-11/12 mx-auto">
         <div className="navbar-start">
-          
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
               <svg
@@ -139,7 +139,6 @@ const Navbar = () => {
             </ul>
           </div>
 
-          
           <Link to="/" className="flex items-center space-x-2">
             <img
               src={logo}
@@ -152,16 +151,13 @@ const Navbar = () => {
           </Link>
         </div>
 
-        
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1 space-x-2">{links}</ul>
         </div>
 
-        
         <div className="navbar-end flex items-center gap-4">
           {user ? (
             <div className="flex items-center gap-4">
-              
               <div className="dropdown dropdown-end">
                 <div tabIndex={0} role="button" className="avatar">
                   <div className="w-12 border-2 border-gray-300 rounded-full">
@@ -176,7 +172,6 @@ const Navbar = () => {
                   </div>
                 </div>
 
-                
                 <ul
                   tabIndex={-1}
                   className="menu menu-sm dropdown-content bg-base-100 rounded-box z-50 mt-3 w-56 p-2 shadow"
@@ -185,7 +180,7 @@ const Navbar = () => {
                   <li className="text-xs border-b-2 pb-1">{user.email}</li>
                   <li className="text-xs mt-2">Profile</li>
                   <li className="text-xs pb-4 mt-1">Setting</li>
-                  
+
                   <button
                     onClick={signOut}
                     className="btn rounded-full btn-outline hover:text-white hover:bg-[#092052] text-amber-400 bg-white md:py-5 md:px-5 hover:scale-105 md:hidden"

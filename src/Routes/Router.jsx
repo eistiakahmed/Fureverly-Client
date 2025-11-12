@@ -11,6 +11,7 @@ import AddListingPage from '../Pages/AddListingPage/AddListingPage';
 import MyListing from '../Pages/MyListing/MyListing';
 import UpdateListing from '../Pages/UpdateListing/UpdateListing';
 import MyOrders from '../Pages/MyOrders/MyOrders';
+import ErrorPage from '../Pages/Error/ErrorPage';
 
 export const router = createBrowserRouter([
   {
@@ -23,13 +24,13 @@ export const router = createBrowserRouter([
       },
       {
         path: '/petsAndSupplies',
-        loader: () => fetch('http://localhost:3000/product'),
+        loader: () => fetch('https://fureverly-server.vercel.app/product'),
         element: <PetsAndSupplies />,
       },
       {
         path: '/product/:id',
         loader: ({ params }) =>
-          fetch(`http://localhost:3000/product/${params.id}`),
+          fetch(`https://fureverly-server.vercel.app/product/${params.id}`),
         element: (
           <PrivateRoutes>
             <PetProductDetails />
@@ -59,7 +60,7 @@ export const router = createBrowserRouter([
       {
         path: '/updateListing/:id',
         loader: ({ params }) =>
-          fetch(`http://localhost:3000/product/${params.id}`),
+          fetch(`https://fureverly-server.vercel.app/product/${params.id}`),
         element: (
           <PrivateRoutes>
             <UpdateListing />
@@ -82,6 +83,11 @@ export const router = createBrowserRouter([
         path: '/register',
         element: <Register />,
       },
+      
     ],
   },
+  {
+    path: "*",
+    element: <ErrorPage />
+  }
 ]);

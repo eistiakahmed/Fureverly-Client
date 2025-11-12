@@ -11,14 +11,13 @@ const AddListingPage = () => {
 
     const name = e.target.name.value;
     const category = e.target.category.value;
-    const Price = category === 'Pets' ? 0 : Number(e.target.price.value);
+    const Price = category === 'Pets' ? 0 : Number(e.target.Price.value);
     const location = e.target.location.value;
     const description = e.target.description.value;
     const image = e.target.image.value;
     const date = e.target.date.value;
     const email = e.target.email.value;
 
-    
     if (category !== 'Pets' && (!Price || Price <= 0)) {
       return toast.error('Please enter a valid price for this category');
     }
@@ -34,7 +33,7 @@ const AddListingPage = () => {
       email,
     };
 
-    fetch('http://localhost:3000/product', {
+    fetch('https://fureverly-server.vercel.app/product', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formatData),
@@ -95,7 +94,7 @@ const AddListingPage = () => {
           <label className="block mb-1 font-semibold">Price</label>
           <input
             type="number"
-            name="price"
+            name="Price"
             defaultValue={category === 'Pets' ? 0 : ''}
             disabled={category === 'Pets'}
             className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#092052] bg-gray-50 disabled:bg-gray-100"

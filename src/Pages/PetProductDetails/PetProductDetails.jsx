@@ -52,7 +52,7 @@ const PetProductDetails = () => {
 
     // console.log(formatDate);
 
-    fetch('http://localhost:3000/orders', {
+    fetch('https://fureverly-server.vercel.app/orders', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

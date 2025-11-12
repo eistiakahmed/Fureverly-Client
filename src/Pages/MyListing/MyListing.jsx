@@ -8,11 +8,11 @@ const MyListing = () => {
   const { user } = useContext(AuthContext);
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [deletingId, setDeletingId] = useState(null); 
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     if (user?.email) {
-      fetch(`http://localhost:3000/myListing?email=${user.email}`)
+      fetch(`https://fureverly-server.vercel.app/myListing?email=${user.email}`)
         .then((res) => res.json())
         .then((data) => {
           setListings(data);
@@ -25,7 +25,6 @@ const MyListing = () => {
     }
   }, [user]);
 
-  
   const handleDelete = (id) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -37,9 +36,9 @@ const MyListing = () => {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        setDeletingId(id); 
+        setDeletingId(id);
 
-        fetch(`http://localhost:3000/product/${id}`, {
+        fetch(`https://fureverly-server.vercel.app/product/${id}`, {
           method: 'DELETE',
         })
           .then((res) => res.json())

@@ -13,7 +13,7 @@ const MyOrders = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:3000/orders?email=${user.email}`)
+    fetch(`https://fureverly-server.vercel.app/orders?email=${user.email}`)
       .then((res) => res.json())
       .then((data) => {
         // console.log(data);

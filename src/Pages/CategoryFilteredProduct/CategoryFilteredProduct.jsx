@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router';
 import ProductCard from '../ProductCard/ProductCard';
 import { CircleArrowLeft } from 'lucide-react';
 
-
 const CategoryFilteredProduct = () => {
   const { categoryName } = useParams();
   const navigate = useNavigate();
@@ -11,7 +10,9 @@ const CategoryFilteredProduct = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/products?category=${categoryName}`)
+    fetch(
+      `https://fureverly-server.vercel.app/products?category=${categoryName}`
+    )
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);

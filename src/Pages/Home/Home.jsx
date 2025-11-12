@@ -12,7 +12,7 @@ const Home = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:3000/latestListing')
+    fetch('https://fureverly-server.vercel.app/latestListing')
       .then((res) => res.json())
       .then((data) => {
         setListing(data);
@@ -52,14 +52,14 @@ const Home = () => {
             No listings available right now.
           </p>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 animate-fadeIn w-7xl  mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 animate-fadeIn lg:w-7xl  mx-auto">
             {listing.map((product) => (
               <ProductCard key={product._id} product={product} />
             ))}
           </div>
         )}
 
-        <div className='flex justify-center'>
+        <div className="flex justify-center">
           <button className=" mt-16">
             <Link
               to="/petsAndSupplies"
