@@ -1,10 +1,10 @@
 import React, { use, useEffect, useState } from 'react';
 import { AuthContext } from '../../Context/AuthContext';
 import { RingLoader } from 'react-spinners';
-
 import { FaRegFilePdf } from 'react-icons/fa6';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const MyOrders = () => {
   const { user } = use(AuthContext);
@@ -12,23 +12,20 @@ const MyOrders = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!user?.email) return;
     setLoading(true);
     fetch(`https://fureverly-server.vercel.app/orders?email=${user.email}`)
       .then((res) => res.json())
       .then((data) => {
-        // console.log(data);
         setOrders(data);
         setLoading(false);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => console.log(err));
   }, [user]);
 
   const handleDownloadReport = () => {
     const doc = new jsPDF();
-
-    doc.text('My Orders Reports', 14, 15);
+    doc.text('My Orders Report', 14, 15);
 
     const tableColumn = [
       'SL No',
@@ -61,88 +58,114 @@ const MyOrders = () => {
     });
 
     doc.save(`MyOrders_${user.displayName}.pdf`);
-    // console.log('PDF for', orders.length, 'orders');
   };
 
   return (
-    <div className="px-3 sm:px-6 md:px-10 lg:w-10/12 mx-auto py-10  ">
-      <title>Fureverly | My Listings</title>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl md:text-4xl font-semibold YesevaOne text-[#092052] dark:text-white ">
+    <div className="w-[95%] max-w-6xl mx-auto py-10">
+      <title>Fureverly | My Orders</title>
+
+      
+      <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
+        <h2 className="text-3xl font-bold text-[#092052] YesevaOne dark:text-white">
           My Orders ({orders.length})
         </h2>
 
         {orders.length > 0 && (
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={handleDownloadReport}
-            className="bg-[#092052] text-white px-4 py-2 rounded-lg hover:bg-[#0c2a6a] transition-all flex items-center gap-2"
+            className="bg-[#092052] text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-[#0c2a6a] transition-colors"
           >
             <FaRegFilePdf /> Download Report
-          </button>
+          </motion.button>
         )}
       </div>
 
-      {loading ? (
-        <div className="min-h-[50vh] flex justify-center items-center transition-opacity duration-300">
-          <RingLoader size={80} color="#092052" />
-        </div>
-      ) : (
-        <div className="bg-white rounded-2xl shadow-md">
-          <table className="table w-full text-sm md:text-base">
+      
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            key="loader"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="min-h-[50vh] flex justify-center items-center"
+          >
+            <RingLoader size={80} color="#092052" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      
+      {!loading && (
+        <motion.div
+          key="table"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="bg-white rounded-2xl shadow-lg overflow-x-auto"
+        >
+          <table className="w-full text-left border-collapse">
             <thead className="bg-[#092052] text-white">
               <tr>
-                <th className="py-3 px-2 text-center">SL No</th>
-                <th className="py-3 px-2 text-center">Product Name</th>
-                <th className="py-3 px-2 text-center">Buyer Name</th>
-                <th className="py-3 px-2 text-center hidden sm:table-cell">
-                  Price
-                </th>
-                <th className="py-3 px-2 text-center hidden md:table-cell">
-                  Quantity
-                </th>
-                <th className="py-3 px-2 text-center hidden lg:table-cell">
-                  Address
-                </th>
-                <th className="py-3 px-2 text-center hidden lg:table-cell">
-                  Date
-                </th>
-                <th className="py-3 px-2 text-center">Phone</th>
+                {[
+                  'SL No',
+                  'Product Name',
+                  'Buyer Name',
+                  'Price',
+                  'Quantity',
+                  'Address',
+                  'Date',
+                  'Phone',
+                ].map((head, i) => (
+                  <th
+                    key={i}
+                    className="py-3 px-2 text-center whitespace-nowrap font-semibold"
+                  >
+                    {head}
+                  </th>
+                ))}
               </tr>
             </thead>
 
             <tbody className="dark:text-black">
-              {orders.map((order, index) => (
-                <tr
-                  key={order._id}
-                  className="hover:bg-gray-50 border-t border-gray-100 transition"
-                >
-                  <td className="py-3 px-2 text-center tinos">{index + 1}</td>
-                  <td className="py-3 px-2 text-center tinos">
-                    {order.productName}
-                  </td>
-                  <td className="py-3 px-2 font-semibold text-center tinos">
-                    {user.displayName}
-                  </td>
-                  <td className="py-3 px-2 hidden sm:table-cell text-center tinos">
-                    {order.price}
-                  </td>
-                  <td className="py-3 px-2 hidden sm:table-cell text-center tinos">
-                    {order.quantity}
-                  </td>
-                  <td className="py-3 px-2 hidden md:table-cell text-center tinos">
-                    {order.address}
-                  </td>
-                  <td className="py-3 px-2 hidden lg:table-cell text-center tinos">
-                    {order.date}
-                  </td>
-                  <td className="py-3 px-2 hidden lg:table-cell text-center tinos">
-                    {order.phone}
+              {orders.length > 0 ? (
+                orders.map((order, index) => (
+                  <motion.tr
+                    key={order._id}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="border-t hover:bg-gray-50 transition-all"
+                  >
+                    <td className="py-3 px-2 text-center">{index + 1}</td>
+                    <td className="py-3 px-2 text-center">
+                      {order.productName}
+                    </td>
+                    <td className="py-3 px-2 text-center font-semibold">
+                      {user.displayName}
+                    </td>
+                    <td className="py-3 px-2 text-center">{order.price}</td>
+                    <td className="py-3 px-2 text-center">{order.quantity}</td>
+                    <td className="py-3 px-2 text-center">{order.address}</td>
+                    <td className="py-3 px-2 text-center">{order.date}</td>
+                    <td className="py-3 px-2 text-center">{order.phone}</td>
+                  </motion.tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="8"
+                    className="py-6 text-center text-gray-500 font-medium"
+                  >
+                    No orders found.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
-        </div>
+        </motion.div>
       )}
     </div>
   );

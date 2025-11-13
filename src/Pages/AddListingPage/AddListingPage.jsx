@@ -1,10 +1,13 @@
 import React, { use, useState } from 'react';
+import { motion } from 'framer-motion';
 import toast, { Toaster } from 'react-hot-toast';
 import { AuthContext } from '../../Context/AuthContext';
+import { RingLoader } from 'react-spinners';
 
 const AddListingPage = () => {
   const { user } = use(AuthContext);
   const [category, setCategory] = useState('Pets');
+  const[loading, setLoading] = useState(true)
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -46,6 +49,7 @@ const AddListingPage = () => {
         );
         e.target.reset();
         setCategory('Pets');
+        setLoading(false)
       })
       .catch((err) => {
         console.log(err);
@@ -53,25 +57,84 @@ const AddListingPage = () => {
       });
   };
 
+
+  if(loading){
+    <motion.div
+      key="loader"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="min-h-[50vh] flex justify-center items-center"
+    >
+      <RingLoader size={80} color="#092052" />
+    </motion.div>;
+  }
+
+  
+  const container = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-xl my-16">
+    <motion.div
+      className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-xl my-16"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+    >
       <Toaster />
-      <h2 className="text-4xl font-extrabold mb-6 text-center text-[#092052] YesevaOne dark:text-black">
+
+      <motion.h2
+        className="text-4xl font-extrabold mb-6 text-center text-[#092052] YesevaOne dark:text-black"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+      >
         Add New Listing
-      </h2>
+      </motion.h2>
 
-      <form onSubmit={handleSubmit} className="space-y-5 dark:text-black">
-        <div>
-          <label className="block mb-1 font-semibold">Product/Pet Name</label>
-          <input
-            type="text"
-            name="name"
-            className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#092052]"
-            required
-          />
-        </div>
+      <motion.form
+        onSubmit={handleSubmit}
+        className="space-y-5 dark:text-black"
+        variants={container}
+        initial="hidden"
+        animate="visible"
+      >
+        {[
+          {
+            label: 'Product/Pet Name',
+            name: 'name',
+            type: 'text',
+            required: true,
+          },
+          { label: 'Location', name: 'location', type: 'text', required: true },
+          { label: 'Image URL', name: 'image', type: 'text', required: true },
+          { label: 'Pick Up Date', name: 'date', type: 'date', required: true },
+        ].map((field, idx) => (
+          <motion.div key={idx} variants={item}>
+            <label className="block mb-1 font-semibold">{field.label}</label>
+            <input
+              type={field.type}
+              name={field.name}
+              required={field.required}
+              className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#092052]"
+            />
+          </motion.div>
+        ))}
 
-        <div>
+        
+        <motion.div variants={item}>
           <label className="block mb-1 font-semibold">Category</label>
           <select
             name="category"
@@ -88,9 +151,10 @@ const AddListingPage = () => {
             <option value="Accessories">Accessories</option>
             <option value="Care Products">Pet Care Product</option>
           </select>
-        </div>
+        </motion.div>
 
-        <div>
+        
+        <motion.div variants={item}>
           <label className="block mb-1 font-semibold">Price</label>
           <input
             type="number"
@@ -99,48 +163,20 @@ const AddListingPage = () => {
             disabled={category === 'Pets'}
             className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#092052] bg-gray-50 disabled:bg-gray-100"
           />
-        </div>
+        </motion.div>
 
-        <div>
-          <label className="block mb-1 font-semibold">Location</label>
-          <input
-            type="text"
-            name="location"
-            className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#092052]"
-            required
-          />
-        </div>
-
-        <div>
+        
+        <motion.div variants={item}>
           <label className="block mb-1 font-semibold">Description</label>
           <textarea
             name="description"
             className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#092052]"
             required
           />
-        </div>
+        </motion.div>
 
-        <div>
-          <label className="block mb-1 font-semibold">Image URL</label>
-          <input
-            type="text"
-            name="image"
-            className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#092052]"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block mb-1 font-semibold">Pick Up Date</label>
-          <input
-            type="date"
-            name="date"
-            className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#092052]"
-            required
-          />
-        </div>
-
-        <div>
+        
+        <motion.div variants={item}>
           <label className="block mb-1 font-semibold">Email</label>
           <input
             type="email"
@@ -149,16 +185,23 @@ const AddListingPage = () => {
             defaultValue={user?.email}
             className="w-full border border-gray-300 p-3 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#092052]"
           />
-        </div>
+        </motion.div>
 
-        <button
-          type="submit"
-          className="w-full p-3 rounded-lg border-2 border-[#092052] text-[#092052] font-semibold hover:bg-[#092052] hover:text-white transition duration-300"
+        
+        <motion.div
+          variants={item}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
         >
-          Add Listing
-        </button>
-      </form>
-    </div>
+          <button
+            type="submit"
+            className="w-full p-3 rounded-lg border-2 border-[#092052] text-[#092052] font-semibold hover:bg-[#092052] hover:text-white transition duration-300"
+          >
+            Add Listing
+          </button>
+        </motion.div>
+      </motion.form>
+    </motion.div>
   );
 };
 

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLoaderData } from 'react-router';
 import ProductCard from '../ProductCard/ProductCard';
 import { RingLoader } from 'react-spinners';
+import { motion } from 'framer-motion';
 
 const PetsAndSupplies = () => {
   const data = useLoaderData();
@@ -14,7 +15,6 @@ const PetsAndSupplies = () => {
     setLoading(false);
   }, [data]);
 
-  
   const handleSearch = (e) => {
     e.preventDefault();
     const search_text = e.target.search.value.trim();
@@ -36,7 +36,6 @@ const PetsAndSupplies = () => {
       .catch(() => setLoading(false));
   };
 
-  
   const handleCategoryChange = (e) => {
     const selectedCategory = e.target.value;
     setCategory(selectedCategory);
@@ -56,6 +55,21 @@ const PetsAndSupplies = () => {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+  };
+
+  // Framer Motion variants for staggered grid
+  const containerVariants = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
   return (
@@ -113,11 +127,18 @@ const PetsAndSupplies = () => {
           <RingLoader size={80} color="#092052" />
         </div>
       ) : products && products.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10"
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+        >
           {products.map((product) => (
-            <ProductCard key={product._id} product={product} />
+            <motion.div key={product._id} variants={itemVariants}>
+              <ProductCard product={product} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       ) : (
         <p className="text-center text-gray-500 text-lg mt-24">
           No pets or supplies available right now.

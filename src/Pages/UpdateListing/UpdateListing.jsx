@@ -1,12 +1,13 @@
-import React, { use, useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../Context/AuthContext';
 import { useLoaderData, useNavigate } from 'react-router';
 import toast, { Toaster } from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 const UpdateListing = () => {
   const data = useLoaderData();
-  const { user } = use(AuthContext);
-  const [category, setCategory] = useState('Pets');
+  const { user } = useContext(AuthContext);
+  const [category, setCategory] = useState(data?.category || 'Pets');
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -34,37 +35,45 @@ const UpdateListing = () => {
 
     fetch(`https://fureverly-server.vercel.app/product/${data._id}`, {
       method: 'PUT',
-      headers: {
-        'Content-type': 'application/json',
-      },
+      headers: { 'Content-type': 'application/json' },
       body: JSON.stringify(formatData),
     })
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
+      .then(() => {
         toast.success('Successfully updated!');
         navigate('/myListings');
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
+        toast.error('Failed to update listing. Try again.');
       });
   };
-
-  
 
   return (
     <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-xl my-16">
       <Toaster />
-      <h2 className="text-4xl font-extrabold mb-6 text-center text-[#092052] YesevaOne dark:text-black">
+      <motion.h2
+        className="text-4xl font-extrabold mb-6 text-center text-[#092052] YesevaOne dark:text-black"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         Update Listing
-      </h2>
+      </motion.h2>
 
-      <form onSubmit={handleSubmit} className="space-y-5 dark:text-black">
+      <motion.form
+        onSubmit={handleSubmit}
+        className="space-y-5 dark:text-black"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
         <div>
           <label className="block mb-1 font-semibold">Product/Pet Name</label>
           <input
             type="text"
             name="name"
+            defaultValue={data?.name}
             className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#092052]"
             required
           />
@@ -94,7 +103,7 @@ const UpdateListing = () => {
           <input
             type="number"
             name="price"
-            defaultValue={category === 'Pets' ? 0 : ''}
+            defaultValue={category === 'Pets' ? 0 : data?.price || data?.price}
             disabled={category === 'Pets'}
             className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#092052] bg-gray-50 disabled:bg-gray-100"
           />
@@ -105,6 +114,7 @@ const UpdateListing = () => {
           <input
             type="text"
             name="location"
+            defaultValue={data?.location}
             className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#092052]"
             required
           />
@@ -114,6 +124,7 @@ const UpdateListing = () => {
           <label className="block mb-1 font-semibold">Description</label>
           <textarea
             name="description"
+            defaultValue={data?.description}
             className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#092052]"
             required
           />
@@ -124,6 +135,7 @@ const UpdateListing = () => {
           <input
             type="text"
             name="image"
+            defaultValue={data?.image}
             className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#092052]"
             required
           />
@@ -134,6 +146,7 @@ const UpdateListing = () => {
           <input
             type="date"
             name="date"
+            defaultValue={data?.date?.split('T')[0]}
             className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#092052]"
             required
           />
@@ -150,13 +163,15 @@ const UpdateListing = () => {
           />
         </div>
 
-        <button
+        <motion.button
           type="submit"
           className="w-full p-3 rounded-lg border-2 border-[#092052] text-[#092052] font-semibold hover:bg-[#092052] hover:text-white transition duration-300"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
           Update Listing
-        </button>
-      </form>
+        </motion.button>
+      </motion.form>
     </div>
   );
 };
