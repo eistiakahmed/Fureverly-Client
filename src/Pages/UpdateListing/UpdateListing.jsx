@@ -42,6 +42,7 @@ const UpdateListing = () => {
       .then(() => {
         toast.success('Successfully updated!');
         navigate('/myListings');
+        // console.log(data)
       })
       .catch((err) => {
         console.error(err);

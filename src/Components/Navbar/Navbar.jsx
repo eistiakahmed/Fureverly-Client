@@ -192,7 +192,9 @@ const Navbar = () => {
                 >
                   <li className="font-bold">{user.displayName}</li>
                   <li className="text-xs border-b pb-1">{user.email}</li>
-                  <li className="text-xs mt-2">Profile</li>
+                  <li className="text-xs mt-2">
+                    <Link to="/myProfile">Profile</Link>
+                  </li>
                   <li className="text-xs pb-4 mt-1">Setting</li>
                   <button
                     onClick={signOut}

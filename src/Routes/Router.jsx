@@ -12,6 +12,7 @@ import MyListing from '../Pages/MyListing/MyListing';
 import UpdateListing from '../Pages/UpdateListing/UpdateListing';
 import MyOrders from '../Pages/MyOrders/MyOrders';
 import ErrorPage from '../Pages/Error/ErrorPage';
+import MyProfile from '../Pages/MyProfile/MyProfile';
 
 export const router = createBrowserRouter([
   {
@@ -83,11 +84,14 @@ export const router = createBrowserRouter([
         path: '/register',
         element: <Register />,
       },
-      
+      {
+        path: '/myProfile',
+        element: <MyProfile />
+      },
     ],
   },
   {
-    path: "*",
-    element: <ErrorPage />
-  }
+    path: '*',
+    element: <ErrorPage />,
+  },
 ]);
