@@ -4,7 +4,7 @@ import Category from '../../Components/Category/Category';
 import ProductCard from '../ProductCard/ProductCard';
 import { RingLoader } from 'react-spinners';
 import { Link } from 'react-router';
-import { Webhook } from 'lucide-react';
+import { HeartHandshake, PawPrint, UsersRound, Webhook } from 'lucide-react';
 
 const Home = () => {
   const [listing, setListing] = useState([]);
@@ -68,6 +68,41 @@ const Home = () => {
               <Webhook /> Explore More
             </Link>
           </button>
+        </div>
+      </section>
+
+      {/* 🐾 Why Adopt from Fureverly */}
+      <section className="bg-white py-20 px-6 w-10/12 mx-auto rounded-2xl text-center shadow-inner">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-[#092052] mb-6 flex justify-center items-center gap-3">
+            <HeartHandshake className="text-pink-600" /> Why Adopt from
+            Fureverly?
+          </h2>
+          <p className="text-lg text-gray-600 leading-relaxed">
+            Every pet deserves love, not a price tag. At{' '}
+            <strong>Fureverly</strong>, we connect rescued animals with loving
+            homes. Adoption gives these pets a second chance — and you a loyal
+            companion. Be their hero. Adopt, don’t shop!
+          </p>
+          <div className="mt-10 flex justify-center gap-8 flex-wrap">
+            <div className="bg-[#fef3f3] px-6 py-4 rounded-2xl shadow-sm hover:scale-110 duration-200 transition-all">
+              <PawPrint className="mx-auto text-pink-500 mb-2" size={36} />
+              <p className="font-semibold text-gray-700">Save Lives</p>
+            </div>
+            <div className="bg-[#eef6ff] px-6 py-4 rounded-2xl shadow-sm hover:scale-110 duration-200 transition-all">
+              <UsersRound className="mx-auto text-blue-500 mb-2" size={36} />
+              <p className="font-semibold text-gray-700">
+                Join a Caring Community
+              </p>
+            </div>
+            <div className="bg-[#f0fff4] px-6 py-4 rounded-2xl shadow-sm hover:scale-110 duration-200 transition-all">
+              <HeartHandshake
+                className="mx-auto text-green-500 mb-2"
+                size={36}
+              />
+              <p className="font-semibold text-gray-700">Promote Kindness</p>
+            </div>
+          </div>
         </div>
       </section>
     </div>
