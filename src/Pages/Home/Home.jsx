@@ -25,19 +25,46 @@ const Home = () => {
       });
   }, []);
 
+  const petHero = [
+    {
+      name: 'Sadia Rahman',
+      pet: 'Bella (Golden Retriever)',
+      img: 'https://i.ibb.co.com/ZzdRcw8c/download-11.jpg',
+      role: 'Adopter',
+      feedback:
+        "Adopting Bella was the best decision ever! She's full of energy and love – our home feels complete now.",
+    },
+    {
+      name: 'Tanvir Ahmed',
+      pet: 'Luna (Persian Cat)',
+      img: 'https://i.ibb.co.com/Jjfs2ysN/download-12.jpg',
+      role: 'Adopter',
+      feedback:
+        'Luna has brought so much joy and warmth into our lives. Every day with her is a blessing!',
+    },
+    {
+      name: 'Moumita Saha',
+      pet: 'Coco (Parrot)',
+      img: 'https://i.ibb.co.com/nqtNzHPb/parrot.jpg',
+      role: 'Adopter',
+      feedback:
+        'Coco is such a lively companion! His cheerful chirps make our mornings brighter.',
+    },
+  ];
+
   return (
     <div className="bg-[#f9fafc] min-h-screen">
       <Banner />
 
       <section className="text-center mt-24 pb-20">
-        <h1 className="text-4xl md:text-5xl text-[#092052] font-extrabold mb-8">
+        <h1 className="text-4xl md:text-5xl text-[#092052] font-extrabold mb-8 YesevaOne">
           Top Categories
         </h1>
         <Category />
       </section>
 
       <section className="w-11/12 mx-auto pb-28">
-        <h1 className="text-4xl md:text-5xl text-[#092052] font-extrabold text-center mb-12">
+        <h1 className="text-4xl md:text-5xl text-[#092052] font-extrabold text-center mb-12 YesevaOne">
           Latest Listings
         </h1>
 
@@ -71,10 +98,9 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 🐾 Why Adopt from Fureverly */}
-      <section className="bg-white py-20 px-6 w-10/12 mx-auto rounded-2xl text-center shadow-inner">
+      <section className="bg-white py-20 px-6 w-10/12 mx-auto rounded-2xl text-center shadow-md">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-[#092052] mb-6 flex justify-center items-center gap-3">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-[#092052] mb-6 flex justify-center items-center gap-3 YesevaOne">
             <HeartHandshake className="text-pink-600" /> Why Adopt from
             Fureverly?
           </h2>
@@ -103,6 +129,42 @@ const Home = () => {
               <p className="font-semibold text-gray-700">Promote Kindness</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="py-24  text-center">
+        <h2 className="text-4xl md:text-5xl font-extrabold text-[#092052] mb-12 YesevaOne">
+          Meet Our Pet Heroes
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-10/12 mx-auto">
+          {petHero.map((hero, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-2"
+            >
+              <div className="relative w-full overflow-hidden rounded-t-2xl">
+                <img
+                  src={hero.img}
+                  alt={hero.name}
+                  className="w-full h-[500px] object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/60 to-transparent p-4">
+                  <p className="text-white font-semibold text-lg">{hero.pet}</p>
+                </div>
+              </div>
+
+              <div className="p-5">
+                <h3 className="text-xl font-bold text-[#092052]">
+                  {hero.name}
+                </h3>
+                <p className="text-gray-500 text-sm mb-2">{hero.role}</p>
+                <p className="text-gray-600 italic mt-2 text-sm">
+                  {hero.feedback}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </div>

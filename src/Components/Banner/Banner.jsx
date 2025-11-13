@@ -54,7 +54,7 @@ const Banner = () => {
   const currentSlide = slides[currentIndex];
 
   return (
-    <div className="relative w-full overflow-hidden  shadow-2xl group transition-all duration-500">
+    <div className="relative w-full overflow-hidden  group transition-all duration-500">
       <div
         className={`flex flex-col-reverse md:flex-row items-center justify-between px-6 md:px-16 py-10 md:py-20 bg-linear-to-r ${currentSlide.gradient} relative overflow-hidden min-h-[550px] md:min-h-[600px]`}
       >

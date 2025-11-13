@@ -12,63 +12,62 @@ const Category = () => {
     navigate(`/category-filtered-product/${category}`);
   };
 
+  const categories = [
+    {
+      title: 'Pets (Adoption)',
+      img: pet,
+      bg: 'bg-[#fff4d9]',
+      circleBg: 'bg-amber-200',
+      key: 'Pets',
+    },
+    {
+      title: 'Pet Food',
+      img: petFood,
+      bg: 'bg-[#e8f5da]',
+      circleBg: 'bg-green-200',
+      key: 'Pet Food',
+    },
+    {
+      title: 'Accessories',
+      img: accessories,
+      bg: 'bg-[#e4eef7]',
+      circleBg: 'bg-blue-200',
+      key: 'Accessories',
+    },
+    {
+      title: 'Pet Care Products',
+      img: petCareProduct,
+      bg: 'bg-[#f0e2e1]',
+      circleBg: 'bg-yellow-200',
+      key: 'Pet Care Products',
+    },
+  ];
+
   return (
-    <div className="w-11/12 mx-auto md:grid grid-cols-2 lg:grid-cols-4 gap-20 md:py-10">
-      <div
-        onClick={() => handleCategoryClick('Pets')}
-        className="h-[300px] bg-[#fff4d9] rounded-xl shadow-md relative hover:scale-105 transition-all duration-300 cursor-pointer mb-6"
-      >
-        <div className="md:bg-amber-700 md:w-56 md:h-56 rounded-full flex justify-center items-center md:absolute md:-top-12 md:left-1/2 md:-translate-x-1/2 overflow-hidden md:shadow-md">
-          <img src={pet} alt="" className="w-60 h-60 md:object-cover" />
-        </div>
-        <h3 className="absolute text-xl font-bold bottom-6 left-1/2 -translate-x-1/2 text-[#092052]">
-          Pets (Adoption)
-        </h3>
-      </div>
+    <div className="w-11/12 mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-20 md:py-10">
+      {categories.map(({ title, img, bg, circleBg, key }) => (
+        <div
+          key={key}
+          onClick={() => handleCategoryClick(key)}
+          className={`${bg} rounded-2xl shadow-md relative hover:shadow-xl hover:scale-105 transition-all duration-300 cursor-pointer flex flex-col items-center justify-end pb-6`}
+        >
+          <div
+            className={`${circleBg} w-48 h-48 rounded-full flex justify-center items-center absolute -top-12 shadow-md overflow-hidden`}
+          >
+            <img
+              src={img}
+              alt={title}
+              className="w-40 h-40 object-contain"
+              loading="lazy"
+            />
+          </div>
 
-      <div
-        onClick={() => handleCategoryClick('Pet Food')}
-        className="h-[300px] bg-[#e8f5da] rounded-xl shadow-md relative hover:scale-105 transition-all duration-300 cursor-pointer mb-6"
-      >
-        <div className="md:bg-green-400 md:w-56 md:h-56 rounded-full flex justify-center items-center md:absolute md:-top-12 md:left-1/2 md:-translate-x-1/2 overflow-hidden md:shadow-md">
-          <img src={petFood} alt="" className="w-60 h-60 md:object-cover" />
+          {/* Category Title */}
+          <h3 className="mt-36 text-xl font-bold text-[#092052] text-center px-2">
+            {title}
+          </h3>
         </div>
-        <h3 className="absolute text-xl font-bold bottom-6 left-1/2 -translate-x-1/2 text-[#092052]">
-          Pet Food
-        </h3>
-      </div>
-
-      <div
-        onClick={() => handleCategoryClick('Accessories')}
-        className="h-[300px] bg-[#e4eef7] rounded-xl shadow-md relative hover:scale-105 transition-all duration-300 cursor-pointer mb-6"
-      >
-        <div className="md:bg-neutral-500 md:w-56 md:h-56 rounded-full flex justify-center items-center md:absolute md:-top-12 md:left-1/2 md:-translate-x-1/2 overflow-hidden md:shadow-md">
-          <img
-            src={accessories}
-            alt=""
-            className="w-[260px] h-[260px] object-cover"
-          />
-        </div>
-        <h3 className="absolute text-xl font-bold bottom-6 left-1/2 -translate-x-1/2 text-[#092052]">
-          Accessories
-        </h3>
-      </div>
-
-      <div
-        onClick={() => handleCategoryClick('Pet Care Products')}
-        className="h-[300px] bg-[#f0e2e1] rounded-xl shadow-md relative hover:scale-105 transition-all duration-300 cursor-pointer mb-6"
-      >
-        <div className="md:bg-yellow-400 md:w-56 md:h-56 rounded-full flex justify-center items-center md:absolute -top-12 md:left-1/2 md:-translate-x-1/2 overflow-hidden md:shadow-md">
-          <img
-            src={petCareProduct}
-            alt=""
-            className="w-[260px] h-[260px] object-contain"
-          />
-        </div>
-        <h3 className="absolute text-xl font-bold bottom-6 left-1/2 -translate-x-1/2 text-[#092052]">
-          Pet Care Product
-        </h3>
-      </div>
+      ))}
     </div>
   );
 };
