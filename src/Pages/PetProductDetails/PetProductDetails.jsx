@@ -54,7 +54,10 @@ const PetProductDetails = () => {
 
     fetch('https://fureverly-server.vercel.app/orders', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        
+      },
       body: JSON.stringify(formData),
     })
       .then((res) => res.json())

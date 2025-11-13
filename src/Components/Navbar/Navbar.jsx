@@ -196,7 +196,7 @@ const Navbar = () => {
                   <li className="text-xs pb-4 mt-1">Setting</li>
                   <button
                     onClick={signOut}
-                    className="btn rounded-full btn-outline text-amber-400 hover:text-white hover:bg-[#092052] bg-white flex items-center gap-2 justify-center mt-2"
+                    className="btn rounded-full  md:hidden  btn-outline text-amber-400 hover:text-white hover:bg-[#092052] bg-white flex items-center gap-2 justify-center mt-2"
                   >
                     <LogOut /> Logout
                   </button>
