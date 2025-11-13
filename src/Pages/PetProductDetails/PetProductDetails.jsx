@@ -74,14 +74,14 @@ const PetProductDetails = () => {
       <title>Fureverly | {name}</title>
       <Toaster />
 
-      {/* Main container */}
+      
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center bg-white p-8 rounded-2xl shadow-lg border border-gray-100"
       >
-        {/* Image Section */}
+          
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
