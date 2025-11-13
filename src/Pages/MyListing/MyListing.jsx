@@ -19,6 +19,7 @@ const MyListing = () => {
         .then((data) => {
           setListings(data);
           setLoading(false);
+          console.log(data)
         })
         .catch((err) => {
           console.error(err);

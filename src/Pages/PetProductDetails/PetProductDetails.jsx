@@ -52,11 +52,10 @@ const PetProductDetails = () => {
       additionalNotes: e.target.notes.value,
     };
 
-    fetch('https://fureverly-server.vercel.app/orders', {
+    fetch(`https://fureverly-server.vercel.app/orders`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        
       },
       body: JSON.stringify(formData),
     })
@@ -65,7 +64,10 @@ const PetProductDetails = () => {
         toast.success('Order placed successfully!');
         orderModalRef.current.close();
       })
-      .catch(() => toast.error('Failed to place order. Please try again.'))
+      .catch((err) => {
+        toast.error('Failed to place order. Please try again.');
+        console.log(err)
+      })
       .finally(() => setIsSubmitting(false));
   };
 
@@ -74,14 +76,12 @@ const PetProductDetails = () => {
       <title>Fureverly | {name}</title>
       <Toaster />
 
-      
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center bg-white p-8 rounded-2xl shadow-lg border border-gray-100"
       >
-          
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}

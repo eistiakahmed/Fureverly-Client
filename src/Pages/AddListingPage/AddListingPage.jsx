@@ -3,11 +3,14 @@ import { motion } from 'framer-motion';
 import toast, { Toaster } from 'react-hot-toast';
 import { AuthContext } from '../../Context/AuthContext';
 import { RingLoader } from 'react-spinners';
+import { useNavigate } from 'react-router';
 
 const AddListingPage = () => {
   const { user } = use(AuthContext);
   const [category, setCategory] = useState('Pets');
   const[loading, setLoading] = useState(true)
+
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -50,6 +53,8 @@ const AddListingPage = () => {
         e.target.reset();
         setCategory('Pets');
         setLoading(false)
+        navigate('/petsAndSupplies');
+
       })
       .catch((err) => {
         console.log(err);
