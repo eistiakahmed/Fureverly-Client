@@ -65,10 +65,10 @@ const MyOrders = () => {
   };
 
   return (
-    <div className="px-3 sm:px-6 md:px-10 lg:w-10/12 mx-auto py-10">
+    <div className="px-3 sm:px-6 md:px-10 lg:w-10/12 mx-auto py-10  ">
       <title>Fureverly | My Listings</title>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl md:text-4xl font-semibold YesevaOne text-[#092052]">
+        <h2 className="text-2xl md:text-4xl font-semibold YesevaOne text-[#092052] dark:text-white ">
           My Orders ({orders.length})
         </h2>
 
@@ -110,7 +110,7 @@ const MyOrders = () => {
               </tr>
             </thead>
 
-            <tbody className="">
+            <tbody className="dark:text-black">
               {orders.map((order, index) => (
                 <tr
                   key={order._id}

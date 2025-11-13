@@ -53,18 +53,18 @@ const Home = () => {
   ];
 
   return (
-    <div className="bg-[#f9fafc] min-h-screen">
+    <div className=" min-h-screen">
       <Banner />
 
       <section className="text-center mt-24 pb-20">
-        <h1 className="text-4xl md:text-5xl text-[#092052] font-extrabold mb-8 YesevaOne">
+        <h1 className="text-4xl md:text-5xl text-[#092052] dark:text-white font-extrabold mb-8 YesevaOne">
           Top Categories
         </h1>
         <Category />
       </section>
 
       <section className="w-11/12 mx-auto pb-28">
-        <h1 className="text-4xl md:text-5xl text-[#092052] font-extrabold text-center mb-12 YesevaOne">
+        <h1 className="text-4xl md:text-5xl text-[#092052] dark:text-white font-extrabold text-center mb-12 YesevaOne">
           Latest Listings
         </h1>
 
@@ -133,7 +133,7 @@ const Home = () => {
       </section>
 
       <section className="py-24  text-center">
-        <h2 className="text-4xl md:text-5xl font-extrabold text-[#092052] mb-12 YesevaOne">
+        <h2 className="text-4xl md:text-5xl font-extrabold text-[#092052] dark:text-white mb-12 YesevaOne">
           Meet Our Pet Heroes
         </h2>
 

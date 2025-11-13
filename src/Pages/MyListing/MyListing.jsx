@@ -77,7 +77,7 @@ const MyListing = () => {
   return (
     <div className="px-3 sm:px-6 md:px-10 lg:w-10/12 mx-auto py-10">
       <title>Fureverly | My Listings</title>
-      <h2 className="text-2xl md:text-4xl font-semibold mb-6 text-center YesevaOne text-[#092052]">
+      <h2 className="text-2xl md:text-4xl font-semibold mb-6 text-center YesevaOne text-[#092052] dark:text-white">
         My Listings ({listings.length})
       </h2>
 
@@ -108,7 +108,7 @@ const MyListing = () => {
             {listings.map((item, index) => (
               <tr
                 key={item._id}
-                className="hover:bg-gray-50 border-t border-gray-100 transition"
+                className="hover:bg-gray-50 dark:text-black border-t border-gray-100 transition"
               >
                 <td className="py-3 px-2 text-center tinos">{index + 1}</td>
                 <td className="py-3 px-2 flex justify-center">

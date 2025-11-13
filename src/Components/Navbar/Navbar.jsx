@@ -49,8 +49,8 @@ const Navbar = () => {
           className={({ isActive }) =>
             `md:font-medium md:text-lg px-3 py-1 rounded-full transition-all duration-200 ${
               isActive
-                ? 'text-amber-400 bg-amber-100 hover:text-amber-500'
-                : 'text-[#092052] bg-white hover:text-amber-500'
+                ? 'dark:text-black dark:bg-white text-amber-400 bg-amber-100 hover:text-amber-500'
+                : 'text-[#092052] bg-white dark:bg-black dark:text-white hover:text-amber-500'
             }`
           }
         >
@@ -63,8 +63,8 @@ const Navbar = () => {
           className={({ isActive }) =>
             `md:font-medium md:text-lg px-3 py-1 rounded-full transition-all duration-200 ${
               isActive
-                ? 'text-amber-400 bg-amber-100 hover:text-amber-500'
-                : 'text-[#092052] bg-white hover:text-amber-500'
+                ? 'dark:text-black dark:bg-white text-amber-400 bg-amber-100 hover:text-amber-500'
+                : 'text-[#092052] bg-white dark:bg-black dark:text-white hover:text-amber-500'
             }`
           }
         >
@@ -81,8 +81,8 @@ const Navbar = () => {
               className={({ isActive }) =>
                 `md:font-medium md:text-lg px-3 py-1 rounded-full transition-all duration-200 ${
                   isActive
-                    ? 'text-amber-400 bg-amber-100 hover:text-amber-500'
-                    : 'text-[#092052] bg-white hover:text-amber-500'
+                    ? 'dark:text-black dark:bg-white text-amber-400 bg-amber-100 hover:text-amber-500'
+                    : 'text-[#092052] dark:bg-black dark:text-white bg-white hover:text-amber-500'
                 }`
               }
             >
@@ -95,8 +95,8 @@ const Navbar = () => {
               className={({ isActive }) =>
                 `md:font-medium md:text-lg px-3 py-1 rounded-full transition-all duration-200 ${
                   isActive
-                    ? 'text-amber-400 bg-amber-100 hover:text-amber-500'
-                    : 'text-[#092052] bg-white hover:text-amber-500'
+                    ? 'dark:text-black dark:bg-white text-amber-400 bg-amber-100 hover:text-amber-500'
+                    : 'text-[#092052] dark:bg-black dark:text-white bg-white hover:text-amber-500'
                 }`
               }
             >
@@ -109,8 +109,8 @@ const Navbar = () => {
               className={({ isActive }) =>
                 `md:font-medium md:text-lg px-3 py-1 rounded-full transition-all duration-200 ${
                   isActive
-                    ? 'text-amber-400 bg-amber-100 hover:text-amber-500'
-                    : 'text-[#092052] bg-white hover:text-amber-500'
+                    ? 'dark:text-black dark:bg-white text-amber-400 bg-amber-100 hover:text-amber-500'
+                    : 'text-[#092052] dark:bg-black dark:text-white bg-white hover:text-amber-500'
                 }`
               }
             >
@@ -123,7 +123,7 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="bg-base-100 shadow-sm py-2">
+    <nav className="dark:bg-black bg-base-100 shadow-sm py-2">
       <div className="navbar w-11/12 mx-auto">
         <div className="navbar-start">
           <div className="dropdown">
@@ -158,7 +158,7 @@ const Navbar = () => {
               alt="Fureverly Logo"
               className="w-10 h-10 md:w-12 md:h-12 rounded-full"
             />
-            <span className="text-xl md:text-3xl font-bold YesevaOne text-[#092052]">
+            <span className="text-xl md:text-3xl font-bold YesevaOne text-[#092052] dark:text-white">
               Fureverly
             </span>
           </Link>
@@ -211,7 +211,7 @@ const Navbar = () => {
                 </ul>
               </div>
 
-              {/* Desktop Logout */}
+              
               <button
                 onClick={signOut}
                 className="btn rounded-full btn-outline hover:text-white hover:bg-[#092052] text-amber-400 bg-white md:py-5 md:px-5 hover:scale-105 hidden md:flex items-center gap-2"

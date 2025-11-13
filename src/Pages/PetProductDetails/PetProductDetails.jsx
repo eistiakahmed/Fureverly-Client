@@ -43,7 +43,7 @@ const PetProductDetails = () => {
       productName: e.target.productName.value,
       email: e.target.email.value,
       quantity: e.target.quantity.value,
-      price: e.target.price.value,
+      Price: e.target.price.value,
       address: e.target.address.value,
       phone: e.target.phone.value,
       date: e.target.pickupDate.value,
@@ -141,14 +141,14 @@ const PetProductDetails = () => {
           ref={orderModalRef}
           className="modal modal-bottom sm:modal-middle"
         >
-          <div className="modal-box max-w-4xl">
+          <div className="modal-box max-w-4xl ">
             <h2 className="text-2xl font-bold mb-4 text-center">
               Place Your Order
             </h2>
             <div>
               <form
                 onSubmit={handleSubmit}
-                className="space-y-5 bg-[#f9fbff] p-6 rounded-2xl shadow-sm border border-gray-200"
+                className="space-y-5 bg-[#f9fbff] p-6 rounded-2xl shadow-sm border border-gray-200 dark:text-black"
               >
                 <h3 className="text-lg font-semibold text-[#092052] border-b pb-2 mb-3">
                   Buyer Information
@@ -245,12 +245,12 @@ const PetProductDetails = () => {
                   </div>
                 </div>
 
-                <h3 className="text-lg font-semibold text-[#092052] border-b pb-2 mb-3 mt-6">
+                <h3 className="text-lg font-semibold text-[#092052] border-b pb-2 mb-3 mt-6 dark:text-black ">
                   Delivery Information
                 </h3>
 
                 <div className="space-y-4">
-                  <div>
+                  <div className="dark:text-black ">
                     <label className="font-medium text-gray-700 mb-1 block">
                       Address
                     </label>
@@ -263,7 +263,7 @@ const PetProductDetails = () => {
                     />
                   </div>
                   <div className="grid md:grid-cols-2 gap-4">
-                    <div>
+                    <div className="dark:text-black">
                       <label className="font-medium text-gray-700 mb-1 block">
                         Pick-Up / Delivery Date
                       </label>
@@ -272,10 +272,10 @@ const PetProductDetails = () => {
                         name="pickupDate"
                         required
                         min={new Date().toISOString().split('T')[0]}
-                        className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#092052] transition"
+                        className="w-full border border-gray-300 p-3 rounded-lg  focus:outline-none focus:ring-2 focus:ring-[#092052] transition"
                       />
                     </div>
-                    <div>
+                    <div className="dark:text-black">
                       <label className="font-medium text-gray-700 mb-1 block">
                         Phone Number
                       </label>
@@ -289,7 +289,7 @@ const PetProductDetails = () => {
                     </div>
                   </div>
 
-                  <div>
+                  <div className='dark:text-black'>
                     <label className="font-medium text-gray-700 mb-1 block">
                       Additional Notes
                     </label>
@@ -311,7 +311,9 @@ const PetProductDetails = () => {
             </div>
             <div className="modal-action">
               <form method="dialog">
-                <button className="btn">Close</button>
+                <button className="btn dark:bg-white dark:text-black">
+                  Close
+                </button>
               </form>
             </div>
           </div>

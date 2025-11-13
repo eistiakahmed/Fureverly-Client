@@ -56,11 +56,11 @@ const AddListingPage = () => {
   return (
     <div className="max-w-4xl mx-auto p-8 bg-white shadow-lg rounded-xl my-16">
       <Toaster />
-      <h2 className="text-4xl font-extrabold mb-6 text-center text-[#092052] YesevaOne">
+      <h2 className="text-4xl font-extrabold mb-6 text-center text-[#092052] YesevaOne dark:text-black">
         Add New Listing
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5 dark:text-black">
         <div>
           <label className="block mb-1 font-semibold">Product/Pet Name</label>
           <input
