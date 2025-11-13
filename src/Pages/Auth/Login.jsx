@@ -1,9 +1,9 @@
 import React, { use, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { AuthContext } from '../../Context/AuthContext';
-import { FaEye } from 'react-icons/fa';
-import { FaEyeLowVision } from 'react-icons/fa6';
+import { FaEye, FaEyeLowVision } from 'react-icons/fa6';
 import toast, { Toaster } from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 const Login = () => {
   const [hidden, setHidden] = useState(false);
@@ -12,29 +12,23 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-
     const email = e.target.email.value;
     const password = e.target.password.value;
 
-    // console.log({ email, password });
-
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
-
     if (!passwordPattern.test(password)) {
       toast.error(
         'Password must include at least 1 uppercase, 1 lowercase letter, and be 6+ characters long.'
       );
       return;
-    } 
+    }
 
     signInUser(email, password)
       .then((res) => {
-        console.log(res.user);
         toast.success('Login successful!');
         navigate('/');
       })
       .catch((err) => {
-        console.log(err);
         toast.error(err.message);
       });
   };
@@ -42,87 +36,108 @@ const Login = () => {
   const handleGoogleLogin = () => {
     googleSignIn()
       .then((res) => {
-        console.log(res.user);
         toast.success('Logged in with Google!');
         navigate('/');
       })
-      .catch((err) => {
-        console.log(err);
-        toast.error(err.message);
-      });
+      .catch((err) => toast.error(err.message));
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50">
-      <title>Fureverly | Login</title>
-
-      <div className="bg-white rounded-3xl shadow-xl flex flex-col md:flex-row w-full max-w-5xl overflow-hidden border border-gray-200">
-        <div className="md:w-1/2 w-full bg-linear-to-br from-[#FCDFA3] to-[#F7C568] p-10 relative flex flex-col justify-center items-center text-center">
-          <h2 className="text-3xl font-extrabold text-gray-800 mb-2">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50 dark:bg-gray-900">
+      <Toaster />
+      <motion.div
+        className="w-full max-w-5xl flex flex-col md:flex-row bg-white dark:bg-gray-800 rounded-3xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        {/* Left Panel */}
+        <div className="md:w-1/2 w-full bg-gradient-to-br from-[#FCDFA3] to-[#F7C568] p-10 flex flex-col justify-center items-center text-center relative">
+          <h2 className="text-3xl font-extrabold text-gray-800 dark:text-gray-900 mb-2">
             Welcome to Fureverly
           </h2>
-          <p className="text-sm text-gray-700 mb-6">
+          <p className="text-gray-700 dark:text-gray-100 mb-6">
             Best experience for your lovely pets!
           </p>
           <img
-            src="https://i.ibb.co.com/B2MHQc1K/slink-Dogs.png"
+            src="https://i.ibb.co/B2MHQc1K/slink-Dogs.png"
             alt="Dog"
-            className="w-60 sm:w-72 mx-auto drop-shadow-lg"
+            className="w-60 h-auto mx-auto drop-shadow-lg"
           />
-
+          {/* Decorative circles */}
           <div className="absolute top-6 left-6 w-6 h-6 bg-white rounded-full shadow hidden md:block"></div>
           <div className="absolute bottom-10 right-8 w-5 h-5 border rounded-full shadow-sm hidden md:block"></div>
         </div>
 
-        <div className="md:w-1/2 w-full bg-white p-8 sm:p-10 flex flex-col justify-center">
-          <h3 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-6 text-center md:text-left">
+        {/* Right Panel */}
+        <div className="md:w-1/2 w-full p-10 flex flex-col justify-center">
+          <motion.h3
+            className="text-3xl font-bold mb-6 text-center md:text-left text-gray-800 dark:text-white"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             Login
-          </h3>
+          </motion.h3>
 
-          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          <motion.form
+            onSubmit={handleLogin}
+            className="flex flex-col gap-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             <input
               type="text"
               placeholder="Email"
               name="email"
-              className="border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#F5B22C]/60 transition text-sm sm:text-base"
+              required
+              className="border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#F5B22C] dark:bg-gray-700 dark:text-white dark:border-gray-600 transition"
             />
 
             <div className="relative">
               <input
-                type={hidden ? 'text' : 'Password'}
-                placeholder="password"
+                type={hidden ? 'text' : 'password'}
+                placeholder="Password"
                 name="password"
                 required
-                className="border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#F5B22C]/60 transition w-full"
+                className="border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#F5B22C] dark:bg-gray-700 dark:text-white dark:border-gray-600 w-full transition"
               />
               <button
                 onClick={() => setHidden(!hidden)}
                 type="button"
-                className=" absolute right-4 top-4"
+                className="absolute right-4 top-3"
               >
                 {hidden ? <FaEye size={20} /> : <FaEyeLowVision size={20} />}
               </button>
             </div>
-            <p className="text-right font-medium hover:text-blue-600">
-              {' '}
-              Forget password{' '}
+
+            <p className="text-right font-medium hover:text-blue-600 cursor-pointer text-sm dark:text-gray-300">
+              Forget password
             </p>
 
-            <button className="bg-[#F5B22C] hover:bg-[#e0a32a] transition text-white p-3 rounded-xl font-semibold shadow-md text-sm sm:text-base">
+            <motion.button
+              type="submit"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="bg-[#F5B22C] hover:bg-[#e0a32a] transition text-white p-3 rounded-xl font-semibold shadow-md"
+            >
               Login
-            </button>
-          </form>
+            </motion.button>
+          </motion.form>
 
           <div className="flex items-center gap-3 my-6">
-            <span className="w-full h-px bg-gray-300"></span>
-            <span className="text-xs text-gray-500">or</span>
-            <span className="w-full h-px bg-gray-300"></span>
+            <span className="h-px w-full bg-gray-300 dark:bg-gray-600"></span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">or</span>
+            <span className="h-px w-full bg-gray-300 dark:bg-gray-600"></span>
           </div>
 
           {/* Google Login */}
-          <button
+          <motion.button
             onClick={handleGoogleLogin}
-            className="flex items-center justify-center gap-2 border border-gray-300 hover:bg-gray-50 transition p-3 rounded-xl w-full mb-4 font-medium text-gray-700 text-sm sm:text-base"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center justify-center gap-2 border border-gray-300 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 transition p-3 rounded-xl w-full mb-4 font-medium text-gray-700 dark:text-gray-200"
           >
             <svg
               width="16"
@@ -149,21 +164,19 @@ const Login = () => {
               ></path>
             </svg>
             Login with Google
-          </button>
+          </motion.button>
 
-          <p className="text-gray-600 text-center text-sm">
+          <p className="text-gray-600 dark:text-gray-300 text-center text-sm">
             Don’t have an account?{' '}
             <Link
               to="/register"
-              className="text-blue-600 cursor-pointer hover:underline"
+              className="text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
             >
               Register here
             </Link>
           </p>
         </div>
-      </div>
-
-      <Toaster />
+      </motion.div>
     </div>
   );
 };

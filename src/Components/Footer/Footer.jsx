@@ -6,25 +6,25 @@ import {
   FaTwitter,
   FaLinkedinIn,
 } from 'react-icons/fa';
-import logo from '../../assets/footerLogo.png'
+import logo from '../../assets/footerLogo.png';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#FFF9EE] border-t border-gray-200">
-      <div className="w-11/12 mx-auto  py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
+    <footer className="bg-[#FFF9EE] dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+      <div className="w-11/12 mx-auto py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
         {/* Brand */}
-        <div className="">
+        <div>
           <div className="flex items-center">
             <img
               src={logo}
-              alt=""
+              alt="Fureverly Logo"
               className="w-10 h-10 md:w-14 md:h-14 rounded-full"
             />
-            <h2 className="text-3xl font-extrabold text-[#092052] mb-3 YesevaOne">
+            <h2 className="text-3xl font-extrabold text-[#092052] dark:text-white mb-3 YesevaOne">
               Fureverly
             </h2>
           </div>
-          <p className="text-gray-600 text-sm leading-relaxed">
+          <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
             Your trusted companion in finding, adopting, and caring for your
             furry friends.
           </p>
@@ -58,10 +58,10 @@ const Footer = () => {
 
         {/* Quick Links */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
             Quick Links
           </h3>
-          <ul className="space-y-2 text-gray-600 text-sm">
+          <ul className="space-y-2 text-gray-600 dark:text-gray-300 text-sm">
             <li>
               <Link to="/" className="hover:text-[#F5B22C] transition">
                 Home
@@ -87,8 +87,10 @@ const Footer = () => {
 
         {/* Support */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Support</h3>
-          <ul className="space-y-2 text-gray-600 text-sm">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+            Support
+          </h3>
+          <ul className="space-y-2 text-gray-600 dark:text-gray-300 text-sm">
             <li>
               <Link to="/faq" className="hover:text-[#F5B22C] transition">
                 FAQs
@@ -114,17 +116,17 @@ const Footer = () => {
 
         {/* Newsletter */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
             Stay Connected
           </h3>
-          <p className="text-gray-600 text-sm mb-3">
+          <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
             Subscribe to get pet care tips and adoption updates.
           </p>
           <form className="flex items-center">
             <input
               type="email"
               placeholder="Enter your email"
-              className="w-full px-2 py-[13px] border border-[#F5B22C] border-r-0 rounded-l-xl focus:outline-none focus:ring-2 focus:ring-[#F5B22C]/60 text-sm"
+              className="w-full px-3 py-3 border border-[#F5B22C] border-r-0 rounded-l-xl focus:outline-none focus:ring-2 focus:ring-[#F5B22C]/60 text-sm dark:bg-gray-700 dark:text-white dark:border-[#F5B22C]"
             />
             <button
               type="submit"
