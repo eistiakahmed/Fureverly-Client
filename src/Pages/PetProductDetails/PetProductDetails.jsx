@@ -45,7 +45,7 @@ const PetProductDetails = () => {
       productName: name,
       email: user?.email,
       quantity,
-      Price: totalPrice,
+      price: totalPrice,
       address: e.target.address.value,
       phone: e.target.phone.value,
       date: e.target.pickupDate.value,

@@ -1,5 +1,5 @@
 import React, { use, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { AuthContext } from '../../Context/AuthContext';
 import { FaEye, FaEyeLowVision } from 'react-icons/fa6';
 import toast, { Toaster } from 'react-hot-toast';
@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 const Login = () => {
   const [hidden, setHidden] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation()
   const { signInUser, googleSignIn } = use(AuthContext);
 
   const handleLogin = (e) => {
@@ -24,9 +25,9 @@ const Login = () => {
     }
 
     signInUser(email, password)
-      .then((res) => {
+      .then(() => {
         toast.success('Login successful!');
-        navigate('/');
+        navigate(location?.state || '/');
       })
       .catch((err) => {
         toast.error(err.message);
@@ -35,9 +36,9 @@ const Login = () => {
 
   const handleGoogleLogin = () => {
     googleSignIn()
-      .then((res) => {
+      .then(() => {
         toast.success('Logged in with Google!');
-        navigate('/');
+        navigate(location?.state || '/');
       })
       .catch((err) => toast.error(err.message));
   };
@@ -52,7 +53,7 @@ const Login = () => {
         transition={{ duration: 0.6 }}
       >
         {/* Left Panel */}
-        <div className="md:w-1/2 w-full bg-gradient-to-br from-[#FCDFA3] to-[#F7C568] p-10 flex flex-col justify-center items-center text-center relative">
+        <div className="md:w-1/2 w-full bg-linear-to-br from-[#FCDFA3] to-[#F7C568] p-10 flex flex-col justify-center items-center text-center relative">
           <h2 className="text-3xl font-extrabold text-gray-800 dark:text-gray-900 mb-2">
             Welcome to Fureverly
           </h2>

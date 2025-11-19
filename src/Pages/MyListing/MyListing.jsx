@@ -89,7 +89,7 @@ const MyListing = () => {
 
   return (
     <motion.div
-      className="px-6 w-10/12 mx-auto py-10"
+      className="px-4 sm:px-6 md:px-10 w-full max-w-full mx-auto py-10"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
@@ -97,7 +97,7 @@ const MyListing = () => {
       <title>Fureverly | My Listings</title>
 
       <motion.h2
-        className="text-4xl font-semibold mb-6 text-center YesevaOne text-[#092052] dark:text-white"
+        className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-6 text-center YesevaOne text-[#092052] dark:text-white"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
@@ -105,13 +105,14 @@ const MyListing = () => {
         My Listings ({listings.length})
       </motion.h2>
 
+      {/* Responsive Table Wrapper */}
       <motion.div
-        className="bg-white rounded-2xl shadow-md overflow-hidden"
+        className="bg-white rounded-2xl shadow-md overflow-x-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
       >
-        <table className="table w-full text-base">
+        <table className="table w-full text-base min-w-[800px]">
           <thead className="bg-[#092052] text-white">
             <tr>
               <th className="py-3 px-2 text-center">SL No</th>
@@ -165,7 +166,6 @@ const MyListing = () => {
                   <td className="py-3 px-2 text-center tinos">
                     {item.date ? item.date.slice(0, 10) : 'N/A'}
                   </td>
-
                   <td className="py-3 px-2">
                     <div className="flex justify-center flex-wrap gap-2">
                       <motion.div

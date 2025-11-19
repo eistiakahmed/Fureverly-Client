@@ -13,6 +13,7 @@ const MyOrders = () => {
 
   useEffect(() => {
     if (!user?.email) return;
+
     setLoading(true);
     fetch(`https://fureverly-server.vercel.app/orders?email=${user.email}`)
       .then((res) => res.json())
@@ -64,9 +65,9 @@ const MyOrders = () => {
     <div className="w-[95%] max-w-6xl mx-auto py-10">
       <title>Fureverly | My Orders</title>
 
-      
-      <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
-        <h2 className="text-3xl font-bold text-[#092052] YesevaOne dark:text-white">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#092052] YesevaOne dark:text-white">
           My Orders ({orders.length})
         </h2>
 
@@ -75,14 +76,14 @@ const MyOrders = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleDownloadReport}
-            className="bg-[#092052] text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-[#0c2a6a] transition-colors"
+            className="bg-[#092052] text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-[#0c2a6a] transition text-sm sm:text-base"
           >
             <FaRegFilePdf /> Download Report
           </motion.button>
         )}
       </div>
 
-      
+      {/* Loader */}
       <AnimatePresence>
         {loading && (
           <motion.div
@@ -97,16 +98,16 @@ const MyOrders = () => {
         )}
       </AnimatePresence>
 
-      
+      {/* Table */}
       {!loading && (
         <motion.div
           key="table"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="bg-white rounded-2xl shadow-lg overflow-x-auto"
+          className="bg-white rounded-xl shadow-lg overflow-x-auto"
         >
-          <table className="w-full text-left border-collapse">
+          <table className="w-full min-w-[900px]">
             <thead className="bg-[#092052] text-white">
               <tr>
                 {[
@@ -118,10 +119,10 @@ const MyOrders = () => {
                   'Address',
                   'Date',
                   'Phone',
-                ].map((head, i) => (
+                ].map((head, index) => (
                   <th
-                    key={i}
-                    className="py-3 px-2 text-center whitespace-nowrap font-semibold"
+                    key={index}
+                    className="py-3 px-2 text-center font-semibold whitespace-nowrap text-sm sm:text-base"
                   >
                     {head}
                   </th>
@@ -134,30 +135,42 @@ const MyOrders = () => {
                 orders.map((order, index) => (
                   <motion.tr
                     key={order._id}
-                    initial={{ opacity: 0, y: 15 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className="border-t hover:bg-gray-50 transition-all"
+                    className="border-t hover:bg-gray-50 transition"
                   >
-                    <td className="py-3 px-2 text-center">{index + 1}</td>
-                    <td className="py-3 px-2 text-center">
+                    <td className="py-3 px-2 text-center text-sm sm:text-base">
+                      {index + 1}
+                    </td>
+                    <td className="py-3 px-2 text-center text-sm sm:text-base">
                       {order.productName}
                     </td>
-                    <td className="py-3 px-2 text-center font-semibold">
+                    <td className="py-3 px-2 text-center font-semibold text-sm sm:text-base">
                       {user.displayName}
                     </td>
-                    <td className="py-3 px-2 text-center">{order.price}</td>
-                    <td className="py-3 px-2 text-center">{order.quantity}</td>
-                    <td className="py-3 px-2 text-center">{order.address}</td>
-                    <td className="py-3 px-2 text-center">{order.date}</td>
-                    <td className="py-3 px-2 text-center">{order.phone}</td>
+                    <td className="py-3 px-2 text-center text-sm sm:text-base">
+                      {order.price}
+                    </td>
+                    <td className="py-3 px-2 text-center text-sm sm:text-base">
+                      {order.quantity}
+                    </td>
+                    <td className="py-3 px-2 text-center text-sm sm:text-base">
+                      {order.address}
+                    </td>
+                    <td className="py-3 px-2 text-center text-sm sm:text-base">
+                      {order.date}
+                    </td>
+                    <td className="py-3 px-2 text-center text-sm sm:text-base">
+                      {order.phone}
+                    </td>
                   </motion.tr>
                 ))
               ) : (
                 <tr>
                   <td
-                    colSpan="8"
-                    className="py-6 text-center text-gray-500 font-medium"
+                    colSpan={8}
+                    className="py-6 text-center text-gray-500 font-medium text-sm sm:text-base"
                   >
                     No orders found.
                   </td>
