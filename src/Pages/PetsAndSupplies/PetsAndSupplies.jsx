@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useLoaderData } from 'react-router';
-import ProductCard from '../ProductCard/ProductCard';
-import { RingLoader } from 'react-spinners';
+import ProductGrid from '../../components/listings/ProductGrid';
 import { motion } from 'framer-motion';
+import { FiSearch, FiFilter } from 'react-icons/fi';
 
 const PetsAndSupplies = () => {
   const data = useLoaderData();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [category, setCategory] = useState('All');
 
   useEffect(() => {
-    setProducts(data);
-    setLoading(false);
+    if (data) {
+      setProducts(data);
+      setLoading(false);
+    }
   }, [data]);
 
   const handleSearch = (e) => {
@@ -25,15 +28,18 @@ const PetsAndSupplies = () => {
     }
 
     setLoading(true);
-    fetch(
-      `https://fureverly-server.vercel.app/searchName?search=${search_text}`
-    )
+    setError(null);
+    
+    fetch(`https://fureverly-server.vercel.app/searchName?search=${search_text}`)
       .then((res) => res.json())
       .then((result) => {
         setProducts(result);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        setError('Failed to search products. Please try again.');
+        setLoading(false);
+      });
   };
 
   const handleCategoryChange = (e) => {
@@ -46,104 +52,126 @@ const PetsAndSupplies = () => {
     }
 
     setLoading(true);
-    fetch(
-      `https://fureverly-server.vercel.app/filterCategory?search=${selectedCategory}`
-    )
+    setError(null);
+    
+    fetch(`https://fureverly-server.vercel.app/filterCategory?search=${selectedCategory}`)
       .then((res) => res.json())
       .then((result) => {
         setProducts(result);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
-  };
-
-  // Framer Motion variants for staggered grid
-  const containerVariants = {
-    hidden: {},
-    show: {
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+      .catch((err) => {
+        setError('Failed to filter products. Please try again.');
+        setLoading(false);
+      });
   };
 
   return (
-    <div className="min-h-screen w-11/12 mx-auto pb-24">
-      <title>Fureverly | Pets & Supplies</title>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <title>Fureverly | Pets & Supplies</title>
 
-      <div className="text-center pt-24 pb-12">
-        <h1 className="text-4xl md:text-5xl font-extrabold dark:text-white text-[#092052] mb-4 YesevaOne">
-          Pets & Supplies
-        </h1>
-        <p className="dark:text-white text-gray-500 text-lg md:text-xl max-w-2xl mx-auto">
-          Adopt your next best friend or find premium pet supplies 🐾
-        </p>
-      </div>
-
-      <div className="mb-12 text-center">
-        <form
-          onSubmit={handleSearch}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
-        >
-          <input
-            name="search"
-            type="text"
-            placeholder="Search by name..."
-            className="w-full sm:w-80 border border-gray-300 bg-gray-50 text-gray-700 py-3 px-4 rounded-full focus:outline-none focus:ring-2 focus:ring-[#092052]"
-          />
-
-          <select
-            value={category}
-            onChange={handleCategoryChange}
-            className="border border-gray-300 bg-gray-50 text-gray-700 py-3 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-[#092052]"
-          >
-            <option value="All">All Categories</option>
-            <option value="Pets">Pets</option>
-            <option value="Pet Food">Pet Food</option>
-            <option value="Accessories">Accessories</option>
-            <option value="Pet Care Product">Pet Care Product</option>
-          </select>
-
-          <button
-            type="submit"
-            className="border-2 buttonStyle border-[#092052] text-[#092052] font-semibold rounded-full px-8 py-3 hover:bg-[#092052] hover:text-white transition duration-300"
-          >
-            Search
-          </button>
-        </form>
-
-        <div className="inline-block bg-[#092052] text-white px-5 py-2 rounded-full font-medium shadow-md">
-          Showing {products.length} {products.length === 1 ? 'item' : 'items'}
-        </div>
-      </div>
-
-      {loading ? (
-        <div className="min-h-[50vh] flex justify-center items-center">
-          <RingLoader size={80} color="#092052" />
-        </div>
-      ) : products && products.length > 0 ? (
+        {/* Header Section */}
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10"
-          variants={containerVariants}
-          initial="hidden"
-          animate="show"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center py-12"
         >
-          {products.map((product) => (
-            <motion.div key={product._id} variants={itemVariants}>
-              <ProductCard product={product} />
-            </motion.div>
-          ))}
+          <h1 className="text-4xl md:text-5xl font-extrabold text-[#092052] dark:text-white mb-4 YesevaOne">
+            Pets & Supplies
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
+            Adopt your next best friend or find premium pet supplies 🐾
+          </p>
         </motion.div>
-      ) : (
-        <p className="text-center text-gray-500 text-lg mt-24">
-          No pets or supplies available right now.
-        </p>
-      )}
+
+        {/* Search and Filter Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mb-8"
+        >
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
+            <form
+              onSubmit={handleSearch}
+              className="flex flex-col lg:flex-row items-center gap-4"
+            >
+              {/* Search Input */}
+              <div className="relative flex-1 w-full">
+                <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <input
+                  name="search"
+                  type="text"
+                  placeholder="Search by name..."
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F5B22C] focus:border-transparent transition-all duration-200"
+                />
+              </div>
+
+              {/* Category Filter */}
+              <div className="relative">
+                <FiFilter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                <select
+                  value={category}
+                  onChange={handleCategoryChange}
+                  className="pl-12 pr-8 py-3 border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-[#F5B22C] focus:border-transparent transition-all duration-200 appearance-none cursor-pointer min-w-[180px]"
+                >
+                  <option value="All">All Categories</option>
+                  <option value="Pets">Pets</option>
+                  <option value="Pet Food">Pet Food</option>
+                  <option value="Accessories">Accessories</option>
+                  <option value="Pet Care Product">Pet Care Product</option>
+                </select>
+              </div>
+
+              {/* Search Button */}
+              <motion.button
+                type="submit"
+                className="bg-[#092052] dark:bg-[#F5B22C] text-white dark:text-[#092052] font-semibold px-8 py-3 rounded-xl hover:bg-[#0a2458] dark:hover:bg-[#e0a32a] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center gap-2"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                disabled={loading}
+              >
+                <FiSearch size={18} />
+                Search
+              </motion.button>
+            </form>
+          </div>
+        </motion.div>
+
+        {/* Results Counter */}
+        {!loading && !error && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="mb-8 text-center"
+          >
+            <div className="inline-flex items-center bg-[#092052] dark:bg-[#F5B22C] text-white dark:text-[#092052] px-6 py-3 rounded-full font-medium shadow-lg">
+              <span>
+                Showing {products?.length || 0} {products?.length === 1 ? 'item' : 'items'}
+                {category !== 'All' && ` in ${category}`}
+              </span>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Products Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          <ProductGrid
+            products={products}
+            loading={loading}
+            error={error}
+            emptyMessage="No pets or supplies available right now. Try adjusting your search or category filter."
+            skeletonCount={12}
+          />
+        </motion.div>
+      </div>
     </div>
   );
 };

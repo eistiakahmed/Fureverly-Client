@@ -1,13 +1,23 @@
 import React, { useRef, useState, useContext } from 'react';
-import { CalendarDays, Mail, MapPin } from 'lucide-react';
-import { useLoaderData } from 'react-router';
+import { useLoaderData, Link } from 'react-router';
 import { AuthContext } from '../../Context/AuthContext';
-import toast, { Toaster } from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import { ArrowLeft, Share2, Heart, MessageCircle, Phone } from 'lucide-react';
+import toast, { Toaster } from 'react-hot-toast';
+
+// Import new components
+import ImageGallery from '../../components/details/ImageGallery';
+import ProductOverview from '../../components/details/ProductOverview';
+import ProductSpecs from '../../components/details/ProductSpecs';
+import ReviewsSection from '../../components/details/ReviewsSection';
+import RelatedProducts from '../../components/details/RelatedProducts';
 
 const PetProductDetails = () => {
   const { user } = useContext(AuthContext);
   const data = useLoaderData();
+  const [activeSection, setActiveSection] = useState('overview');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const orderModalRef = useRef(null);
 
   const {
     _id,
@@ -21,22 +31,44 @@ const PetProductDetails = () => {
     Price,
   } = data;
 
-  const orderModalRef = useRef(null);
-  const [quantity, setQuantity] = useState(category === 'Pets' ? 1 : 1);
-  const [totalPrice, setTotalPrice] = useState(Price);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // Create images array (in production, this would come from the API)
+  const productImages = [
+    image,
+    // Add more images for gallery demo
+    image, // Duplicate for demo
+    image, // Duplicate for demo
+  ];
 
-  const handleQuantityChange = (e) => {
-    const newQuantity = parseInt(e.target.value) || 1;
-    setQuantity(newQuantity);
-    setTotalPrice(newQuantity * Price);
+  const handleAdopt = () => {
+    if (!user) {
+      toast.error('Please sign in to adopt a pet');
+      return;
+    }
+    openModal();
+  };
+
+  const handleBuy = () => {
+    if (!user) {
+      toast.error('Please sign in to make a purchase');
+      return;
+    }
+    openModal();
+  };
+
+  const handleContact = () => {
+    if (!user) {
+      toast.error('Please sign in to contact the owner');
+      return;
+    }
+    // Open email client or show contact modal
+    window.location.href = `mailto:${email}?subject=Inquiry about ${name}`;
   };
 
   const openModal = () => {
     orderModalRef.current.showModal();
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -44,295 +76,326 @@ const PetProductDetails = () => {
       productId: _id,
       productName: name,
       email: user?.email,
-      quantity,
-      price: totalPrice,
+      quantity: 1,
+      price: Price,
       address: e.target.address.value,
       phone: e.target.phone.value,
       date: e.target.pickupDate.value,
       additionalNotes: e.target.notes.value,
     };
 
-    fetch(`https://fureverly-server.vercel.app/orders`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((res) => res.json())
-      .then(() => {
+    try {
+      const response = await fetch(`https://fureverly-server.vercel.app/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
         toast.success('Order placed successfully!');
         orderModalRef.current.close();
-      })
-      .catch((err) => {
-        toast.error('Failed to place order. Please try again.');
-        console.log(err)
-      })
-      .finally(() => setIsSubmitting(false));
+      } else {
+        throw new Error('Failed to place order');
+      }
+    } catch (error) {
+      toast.error('Failed to place order. Please try again.');
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
+  const sections = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'specs', label: 'Details & Specs' },
+    { id: 'reviews', label: 'Reviews & Q&A' },
+    { id: 'related', label: 'Related Items' }
+  ];
+
   return (
-    <div className="max-w-6xl mx-auto px-4 py-16 min-h-screen">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <title>Fureverly | {name}</title>
-      <Toaster />
+      <Toaster position="top-center" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center bg-white p-8 rounded-2xl shadow-lg border border-gray-100"
-      >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          className="overflow-hidden rounded-xl shadow-sm"
-        >
-          <img
-            src={image}
-            alt={name}
-            className="w-full h-[420px] object-cover rounded-xl hover:opacity-95 transition"
-          />
-        </motion.div>
-
-        {/* Details Section */}
-        <div className="space-y-6">
-          <div>
-            <h1 className="text-4xl font-extrabold text-[#092052] mb-2">
-              {name}
-            </h1>
-            <span className="text-sm bg-amber-100 text-amber-500 rounded-full font-medium uppercase tracking-wide py-2 px-5 inline-block">
-              {category}
-            </span>
+      {/* Breadcrumb & Back Button */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link
+                to="/petsAndSupplies"
+                className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-[#092052] dark:hover:text-[#F5B22C] transition-colors duration-200"
+              >
+                <ArrowLeft size={20} />
+                <span>Back to Listings</span>
+              </Link>
+              <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                <Link to="/" className="hover:text-[#092052] dark:hover:text-[#F5B22C]">Home</Link>
+                <span>/</span>
+                <Link to="/petsAndSupplies" className="hover:text-[#092052] dark:hover:text-[#F5B22C]">{category}</Link>
+                <span>/</span>
+                <span className="text-gray-900 dark:text-white">{name}</span>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <button className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-red-100 hover:text-red-500 transition-colors duration-200">
+                <Heart size={20} />
+              </button>
+              <button className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-blue-100 hover:text-blue-500 transition-colors duration-200">
+                <Share2 size={20} />
+              </button>
+            </div>
           </div>
+        </div>
+      </div>
 
-          {Price === 0 ? (
-            <p className="text-2xl font-semibold text-green-600">
-              Free for Adoption
-            </p>
-          ) : (
-            <p className="text-2xl font-semibold text-[#092052]">
-              Price: <span className="text-amber-500">{Price} BDT</span>
-            </p>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+          {/* Image Gallery */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <ImageGallery images={productImages} productName={name} />
+          </motion.div>
+
+          {/* Product Overview */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <ProductOverview
+              product={data}
+              onAdopt={handleAdopt}
+              onBuy={handleBuy}
+              onContact={handleContact}
+            />
+          </motion.div>
+        </div>
+
+        {/* Section Navigation */}
+        <div className="sticky top-20 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-2 mb-8 shadow-sm">
+          <div className="flex overflow-x-auto">
+            {sections.map((section) => (
+              <button
+                key={section.id}
+                onClick={() => setActiveSection(section.id)}
+                className={`flex-shrink-0 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                  activeSection === section.id
+                    ? 'bg-[#092052] dark:bg-[#F5B22C] text-white dark:text-[#092052]'
+                    : 'text-gray-600 dark:text-gray-400 hover:text-[#092052] dark:hover:text-[#F5B22C] hover:bg-gray-100 dark:hover:bg-gray-700'
+                }`}
+              >
+                {section.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Section Content */}
+        <motion.div
+          key={activeSection}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          {activeSection === 'overview' && (
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700">
+              <h2 className="text-2xl font-bold text-[#092052] dark:text-white mb-6">
+                About {name}
+              </h2>
+              <div className="prose prose-gray dark:prose-invert max-w-none">
+                <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg">
+                  {description || `This beautiful ${category.toLowerCase()} is looking for a loving home. Well-trained, friendly, and great with children and other pets. All vaccinations are up to date and health records are available. The perfect addition to any family looking for a loyal companion.`}
+                </p>
+                
+                <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg">
+                    <h3 className="font-semibold text-blue-900 dark:text-blue-300 mb-3">
+                      What makes {name} special?
+                    </h3>
+                    <ul className="space-y-2 text-blue-800 dark:text-blue-200">
+                      <li>• Friendly and social personality</li>
+                      <li>• Well-trained and house-broken</li>
+                      <li>• Great with children and other pets</li>
+                      <li>• Up-to-date on all vaccinations</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg">
+                    <h3 className="font-semibold text-green-900 dark:text-green-300 mb-3">
+                      Ideal home environment
+                    </h3>
+                    <ul className="space-y-2 text-green-800 dark:text-green-200">
+                      <li>• Active family with time for exercise</li>
+                      <li>• Secure yard or regular walks</li>
+                      <li>• Experience with pets preferred</li>
+                      <li>• Commitment to long-term care</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
 
-          <p className="text-gray-600 leading-relaxed text-justify border-t border-gray-200 pt-4">
-            {description}
-          </p>
+          {activeSection === 'specs' && (
+            <ProductSpecs product={data} category={category} />
+          )}
 
-          <div className="bg-[#f3f6fb] p-5 rounded-xl space-y-3 border border-gray-200">
-            <p className="text-gray-700 flex gap-2">
-              <span className="flex items-center gap-2 font-semibold text-[#092052]">
-                <MapPin size={20} /> Location:
-              </span>{' '}
-              {location}
-            </p>
-            <p className="text-gray-700 flex gap-2">
-              <span className="flex items-center gap-2 font-semibold text-[#092052]">
-                <CalendarDays size={20} /> Listed On:
-              </span>{' '}
-              {date}
-            </p>
-            <p className="text-gray-700 flex gap-2">
-              <span className="flex items-center gap-2 font-semibold text-[#092052]">
-                <Mail size={20} /> Contact:
-              </span>{' '}
-              {email}
-            </p>
+          {activeSection === 'reviews' && (
+            <ReviewsSection productId={_id} productName={name} />
+          )}
+
+          {activeSection === 'related' && (
+            <RelatedProducts currentProduct={data} category={category} />
+          )}
+        </motion.div>
+      </div>
+
+      {/* Enhanced Order Modal */}
+      <dialog ref={orderModalRef} className="modal modal-bottom sm:modal-middle">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3 }}
+          className="modal-box max-w-4xl bg-white dark:bg-gray-800"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-[#092052] dark:text-white">
+              {Price === 0 ? 'Adoption Application' : 'Purchase Order'}
+            </h2>
+            <form method="dialog">
+              <button className="btn btn-sm btn-circle btn-ghost">✕</button>
+            </form>
           </div>
 
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={openModal}
-            className="w-full bg-[#092052] text-white py-3 rounded-full font-semibold hover:bg-[#0b2a72] transition duration-300 shadow-md"
-          >
-            {Price === 0 ? 'Adopt Now' : 'Buy Now'}
-          </motion.button>
-        </div>
-      </motion.div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Product Summary */}
+            <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
+              <div className="flex items-center gap-4">
+                <img
+                  src={image}
+                  alt={name}
+                  className="w-20 h-20 object-cover rounded-lg"
+                />
+                <div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white text-lg">
+                    {name}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400">{category}</p>
+                  <p className="text-[#092052] dark:text-[#F5B22C] font-semibold">
+                    {Price === 0 ? 'Free for Adoption' : `$${Price} BDT`}
+                  </p>
+                </div>
+              </div>
+            </div>
 
-      {/* Modal */}
-      <dialog ref={orderModalRef} className="modal modal-bottom">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="modal-box max-w-4xl"
-        >
-          <h2 className="text-2xl font-bold mb-4 text-center">
-            Place Your Order
-          </h2>
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-5 bg-[#f9fbff] p-6 rounded-2xl shadow-sm border border-gray-200"
-          >
-            <h3 className="text-lg font-semibold text-[#092052] border-b pb-2 mb-3">
-              Buyer Information
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Contact Information */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="font-medium text-gray-700 mb-1 block">
-                  Buyer Name
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Your Name
                 </label>
                 <input
                   type="text"
-                  name="buyerName"
-                  defaultValue={user.displayName}
+                  defaultValue={user?.displayName || ''}
                   readOnly
-                  className="w-full border border-gray-300 p-3 rounded-lg bg-gray-100 focus:outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none"
                 />
               </div>
               <div>
-                <label className="font-medium text-gray-700 mb-1 block">
-                  Email
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Email Address
                 </label>
                 <input
                   type="email"
-                  name="email"
-                  defaultValue={user.email}
+                  defaultValue={user?.email || ''}
                   readOnly
-                  className="w-full border border-gray-300 p-3 rounded-lg bg-gray-100 focus:outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none"
                 />
               </div>
             </div>
 
-            <h3 className="text-lg font-semibold text-[#092052] border-b pb-2 mb-3 mt-6">
-              Product Details
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="font-medium text-gray-700 mb-1 block">
-                  Product ID
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Phone Number *
                 </label>
                 <input
-                  type="text"
-                  name="productId"
-                  defaultValue={_id}
-                  readOnly
-                  className="w-full border border-gray-300 p-3 rounded-lg bg-gray-100 focus:outline-none"
-                />
-              </div>
-              <div>
-                <label className="font-medium text-gray-700 mb-1 block">
-                  Product Name
-                </label>
-                <input
-                  type="text"
-                  name="productName"
-                  defaultValue={name}
-                  readOnly
-                  className="w-full border border-gray-300 p-3 rounded-lg bg-gray-100 focus:outline-none"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="font-medium text-gray-700 mb-1 block">
-                  Quantity
-                </label>
-                <input
-                  type="number"
-                  name="quantity"
-                  value={quantity}
-                  onChange={handleQuantityChange}
-                  readOnly={category === 'Pets'}
-                  className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none"
-                />
-              </div>
-              <div>
-                <label className="font-medium text-gray-700 mb-1 block">
-                  Price
-                </label>
-                <input
-                  type="number"
-                  name="price"
-                  value={totalPrice}
-                  readOnly
-                  className="w-full border border-gray-300 p-3 rounded-lg bg-gray-100 focus:outline-none"
-                />
-              </div>
-            </div>
-
-            <h3 className="text-lg font-semibold text-[#092052] border-b pb-2 mb-3 mt-6">
-              Delivery Information
-            </h3>
-
-            <div className="space-y-4">
-              <div>
-                <label className="font-medium text-gray-700 mb-1 block">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  name="address"
+                  type="tel"
+                  name="phone"
                   required
-                  placeholder="Enter your delivery address"
-                  className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none"
+                  placeholder="Enter your phone number"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F5B22C]"
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="font-medium text-gray-700 mb-1 block">
-                    Pick-Up / Delivery Date
-                  </label>
-                  <input
-                    type="date"
-                    name="pickupDate"
-                    required
-                    min={new Date().toISOString().split('T')[0]}
-                    className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="font-medium text-gray-700 mb-1 block">
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    required
-                    placeholder="Enter your phone number"
-                    className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none"
-                  />
-                </div>
-              </div>
               <div>
-                <label className="font-medium text-gray-700 mb-1 block">
-                  Additional Notes
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Preferred Contact Date *
                 </label>
-                <textarea
-                  name="notes"
-                  placeholder="Any special instructions..."
-                  className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none min-h-[100px]"
+                <input
+                  type="date"
+                  name="pickupDate"
+                  required
+                  min={new Date().toISOString().split('T')[0]}
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F5B22C]"
                 />
               </div>
             </div>
 
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.97 }}
-              disabled={isSubmitting}
-              type="submit"
-              className={`w-full mt-6 py-3 rounded-full font-semibold transition duration-300 shadow-md text-white ${
-                isSubmitting
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-[#092052] hover:bg-[#0b2a72]'
-              }`}
-            >
-              {isSubmitting ? 'Submitting...' : 'Submit Order'}
-            </motion.button>
-          </form>
-          <div className="modal-action">
-            <form method="dialog">
-              <button className="btn dark:bg-white dark:text-black">
-                Close
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Address *
+              </label>
+              <input
+                type="text"
+                name="address"
+                required
+                placeholder="Enter your full address"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F5B22C]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Additional Notes
+              </label>
+              <textarea
+                name="notes"
+                rows={4}
+                placeholder={Price === 0 ? "Tell us about your experience with pets and why you'd like to adopt..." : "Any special instructions or questions..."}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#F5B22C] resize-none"
+              />
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 pt-6">
+              <form method="dialog" className="flex-1">
+                <button
+                  type="button"
+                  className="w-full py-3 px-6 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
+                >
+                  Cancel
+                </button>
+              </form>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-300 ${
+                  isSubmitting
+                    ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                    : 'bg-[#092052] dark:bg-[#F5B22C] text-white dark:text-[#092052] hover:bg-[#0a2458] dark:hover:bg-[#e0a32a] shadow-lg hover:shadow-xl'
+                }`}
+              >
+                {isSubmitting ? 'Submitting...' : Price === 0 ? 'Submit Application' : 'Place Order'}
               </button>
-            </form>
-          </div>
+            </div>
+          </form>
         </motion.div>
       </dialog>
     </div>

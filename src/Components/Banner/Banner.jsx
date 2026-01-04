@@ -54,9 +54,9 @@ const Banner = () => {
   const currentSlide = slides[currentIndex];
 
   return (
-    <div className="relative w-full overflow-hidden  group transition-all duration-500">
+    <div className="relative w-full overflow-hidden group transition-all duration-500 h-[60vh] md:h-[70vh]">
       <div
-        className={`flex flex-col-reverse md:flex-row items-center justify-between px-6 md:px-16 py-10 md:py-20 bg-linear-to-r ${currentSlide.gradient} relative overflow-hidden min-h-[550px] md:min-h-[600px]`}
+        className={`flex flex-col-reverse md:flex-row items-center justify-between px-6 md:px-16 py-10 md:py-20 bg-linear-to-r ${currentSlide.gradient} relative overflow-hidden h-full`}
       >
         <div className="absolute top-0 left-0 w-96 h-96 bg-pink-200 rounded-full blur-3xl opacity-40 -translate-x-28 -translate-y-28"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-yellow-200 rounded-full blur-3xl opacity-40 translate-x-28 translate-y-28"></div>
@@ -110,6 +110,13 @@ const Banner = () => {
             }`}
           ></div>
         ))}
+      </div>
+
+      {/* Visual hint to next section */}
+      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <div className="w-6 h-10 border-2 border-[#092052] rounded-full flex justify-center">
+          <div className="w-1 h-3 bg-[#092052] rounded-full mt-2 animate-pulse"></div>
+        </div>
       </div>
     </div>
   );
