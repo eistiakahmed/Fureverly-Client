@@ -7,11 +7,11 @@ import toast, { Toaster } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
 const Register = () => {
-  const { createUser, googleSignIn } = use(AuthContext);
+  const { createUser, googleSignIn, saveUserToBackend } = use(AuthContext);
   const [hidden, setHidden] = useState(false);
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     const name = e.target.name.value;
     const email = e.target.email.value;
@@ -26,25 +26,37 @@ const Register = () => {
       return;
     }
 
-    createUser(email, password)
-      .then((res) => {
-        updateProfile(res.user, { displayName: name, photoURL: image })
-          .then(() => {
-            toast.success('Account created successfully!');
-            navigate('/');
-          })
-          .catch((err) => toast.error(err.message));
-      })
-      .catch((err) => toast.error(err.message));
+    try {
+      // Create user with Firebase
+      const result = await createUser(email, password);
+      
+      // Update profile with name and photo
+      await updateProfile(result.user, { displayName: name, photoURL: image });
+      
+      // Now save to backend with updated profile data
+      await saveUserToBackend(result.user);
+      
+      toast.success('Account created successfully!');
+      navigate('/');
+    } catch (error) {
+      console.error('Registration error:', error);
+      toast.error(error.message);
+    }
   };
 
-  const handleGoogleLogin = () => {
-    googleSignIn()
-      .then(() => {
-        toast.success('Signed in with Google!');
-        navigate('/');
-      })
-      .catch((err) => toast.error(err.message));
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await googleSignIn();
+      
+      // Save user to backend after Google sign-in
+      await saveUserToBackend(result.user);
+      
+      toast.success('Signed in with Google!');
+      navigate('/');
+    } catch (error) {
+      console.error('Google sign-in error:', error);
+      toast.error(error.message);
+    }
   };
 
   return (

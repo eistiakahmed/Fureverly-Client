@@ -53,27 +53,27 @@ const Navbar = () => {
       public: true
     },
     {
+      to: '/about',
+      label: 'About',
+      icon: <BsPersonCircle size={18} />,
+      public: true
+    },
+    {
+      to: '/contact',
+      label: 'Contact',
+      icon: <MdOutlinePets size={20} />,
+      public: true
+    },
+    {
       to: '/petsAndSupplies',
       label: 'Pets & Supplies',
       icon: <MdOutlinePets size={20} />,
       public: true
     },
     {
-      to: '/addListing',
-      label: 'Add Listing',
-      icon: <ShoppingBasket size={18} />,
-      public: false
-    },
-    {
-      to: '/myListings',
-      label: 'My Listings',
+      to: '/dashboard',
+      label: 'Dashboard',
       icon: <PackageSearch size={18} />,
-      public: false
-    },
-    {
-      to: '/myOrders',
-      label: 'My Orders',
-      icon: <ShoppingCart size={18} />,
       public: false
     }
   ];

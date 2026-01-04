@@ -10,26 +10,25 @@ const ProductGrid = ({
   emptyMessage = "No products available",
   skeletonCount = 8 
 }) => {
-  // Animation variants for staggered grid
+  // Simplified animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2
+        duration: 0.3,
+        staggerChildren: 0.05
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30, scale: 0.9 },
+    hidden: { opacity: 0, y: 20 },
     show: { 
       opacity: 1, 
-      y: 0, 
-      scale: 1,
+      y: 0,
       transition: { 
-        duration: 0.5,
+        duration: 0.3,
         ease: "easeOut"
       } 
     },
@@ -102,24 +101,15 @@ const ProductGrid = ({
     );
   }
 
-  // Products grid
+  // Products grid - simplified version without complex animations
   return (
-    <motion.div
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8"
-      variants={containerVariants}
-      initial="hidden"
-      animate="show"
-    >
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
       {products.map((product, index) => (
-        <motion.div
-          key={product._id || index}
-          variants={itemVariants}
-          className="h-full"
-        >
+        <div key={product._id || index} className="h-full">
           <ProductCard product={product} />
-        </motion.div>
+        </div>
       ))}
-    </motion.div>
+    </div>
   );
 };
 

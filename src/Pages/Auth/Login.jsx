@@ -2,6 +2,7 @@ import React, { use, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { AuthContext } from '../../Context/AuthContext';
 import { FaEye, FaEyeLowVision } from 'react-icons/fa6';
+import { User, Shield } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
@@ -9,7 +10,7 @@ const Login = () => {
   const [hidden, setHidden] = useState(false);
   const navigate = useNavigate();
   const location = useLocation()
-  const { signInUser, googleSignIn } = use(AuthContext);
+  const { signInUser, googleSignIn, resetPassword, saveUserToBackend } = use(AuthContext);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -34,13 +35,50 @@ const Login = () => {
       });
   };
 
-  const handleGoogleLogin = () => {
-    googleSignIn()
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await googleSignIn();
+      
+      // Save user to backend (will handle existing users gracefully)
+      await saveUserToBackend(result.user);
+      
+      toast.success('Logged in with Google!');
+      navigate(location?.state || '/');
+    } catch (error) {
+      console.error('Google login error:', error);
+      toast.error(error.message);
+    }
+  };
+
+  const handleForgotPassword = () => {
+    const email = document.querySelector('input[name="email"]').value;
+    if (!email) {
+      toast.error('Please enter your email first');
+      return;
+    }
+    
+    resetPassword(email)
       .then(() => {
-        toast.success('Logged in with Google!');
-        navigate(location?.state || '/');
+        toast.success('Password reset email sent!');
       })
-      .catch((err) => toast.error(err.message));
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  };
+
+  const fillDemoCredentials = (type) => {
+    const emailInput = document.querySelector('input[name="email"]');
+    const passwordInput = document.querySelector('input[name="password"]');
+    
+    if (type === 'user') {
+      emailInput.value = 'user@fureverly.com';
+      passwordInput.value = 'User123';
+      toast.success('Demo user credentials filled!');
+    } else if (type === 'admin') {
+      emailInput.value = 'admin@fureverly.com';
+      passwordInput.value = 'Admin123';
+      toast.success('Demo admin credentials filled!');
+    }
   };
 
   return (
@@ -113,8 +151,11 @@ const Login = () => {
               </button>
             </div>
 
-            <p className="text-right font-medium hover:text-blue-600 cursor-pointer text-sm dark:text-gray-300">
-              Forget password
+            <p 
+              onClick={handleForgotPassword}
+              className="text-right font-medium hover:text-blue-600 cursor-pointer text-sm dark:text-gray-300 transition-colors"
+            >
+              Forgot password?
             </p>
 
             <motion.button
@@ -131,6 +172,35 @@ const Login = () => {
             <span className="h-px w-full bg-gray-300 dark:bg-gray-600"></span>
             <span className="text-xs text-gray-500 dark:text-gray-400">or</span>
             <span className="h-px w-full bg-gray-300 dark:bg-gray-600"></span>
+          </div>
+
+          {/* Demo Credentials */}
+          <div className="mb-4">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 text-center">
+              Try demo accounts:
+            </p>
+            <div className="flex gap-2">
+              <motion.button
+                type="button"
+                onClick={() => fillDemoCredentials('user')}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1 flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-300 py-2 px-3 rounded-lg text-sm font-medium transition-colors"
+              >
+                <User size={16} />
+                Demo User
+              </motion.button>
+              <motion.button
+                type="button"
+                onClick={() => fillDemoCredentials('admin')}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1 flex items-center justify-center gap-2 bg-purple-50 hover:bg-purple-100 dark:bg-purple-900/20 dark:hover:bg-purple-900/30 text-purple-700 dark:text-purple-300 py-2 px-3 rounded-lg text-sm font-medium transition-colors"
+              >
+                <Shield size={16} />
+                Demo Admin
+              </motion.button>
+            </div>
           </div>
 
           {/* Google Login */}

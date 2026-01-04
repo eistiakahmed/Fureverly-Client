@@ -52,11 +52,8 @@ const ProductCard = ({ product }) => {
   return (
     <motion.div
       className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-200 dark:border-gray-700 h-[480px] flex flex-col"
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-      whileHover={{ y: -8, boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
+      initial={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -4, boxShadow: '0 10px 25px -5px rgb(0 0 0 / 0.1)' }}
     >
       {/* Image Section */}
       <div className="relative h-64 overflow-hidden">
@@ -120,7 +117,7 @@ const ProductCard = ({ product }) => {
         <div className="space-y-2 mb-4">
           {/* Location */}
           <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <IoLocationOutline className="text-red-500 flex-shrink-0" size={16} />
+            <IoLocationOutline className="text-red-500 shrink-0" size={16} />
             <span className="truncate">{product.location}</span>
           </div>
 

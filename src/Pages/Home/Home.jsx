@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Banner from '../../Components/Banner/Banner';
 import Category from '../../Components/Category/Category';
-import ProductGrid from '../../components/listings/ProductGrid';
+import ProductGrid from '../../Components/listings/ProductGrid';
 import { Link } from 'react-router';
 import { 
   HeartHandshake, 

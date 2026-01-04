@@ -1,9 +1,31 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../Context/AuthContext';
 import { motion } from 'framer-motion';
-import { Mail, CalendarDays, User, Edit3, Loader2 } from 'lucide-react';
+import { 
+  Mail, 
+  CalendarDays, 
+  User, 
+  Edit3, 
+  Loader2, 
+  Camera, 
+  Shield, 
+  Settings, 
+  Activity,
+  MapPin,
+  Phone,
+  Globe,
+  CheckCircle,
+  Star
+} from 'lucide-react';
 import { updateProfile } from 'firebase/auth';
 import toast, { Toaster } from 'react-hot-toast';
+import { Link } from 'react-router';
+import Card from '../../Components/ui/Card';
+import Button from '../../Components/ui/Button';
+import Input from '../../Components/ui/Input';
+import Modal from '../../Components/ui/Modal';
+import { ProfileCard, ProfileStats } from '../../Components/profile';
+import { profileApi, calculateProfileCompletion, transformUserProfile } from '../../utils/profileApi';
 
 const MyProfile = () => {
   const { user } = useContext(AuthContext);
@@ -11,6 +33,76 @@ const MyProfile = () => {
   const [displayName, setDisplayName] = useState(user?.displayName || '');
   const [photoURL, setPhotoURL] = useState(user?.photoURL || '');
   const [loading, setLoading] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(true);
+
+  // Profile data from backend
+  const [profileData, setProfileData] = useState({
+    bio: 'Pet lover and enthusiast. Always looking for the best products for my furry friends.',
+    location: 'New York, NY',
+    phone: '',
+    website: '',
+    joinDate: new Date(),
+    isVerified: false,
+    profileCompletion: 0
+  });
+
+  // Stats data from backend
+  const [statsData, setStatsData] = useState({
+    totalListings: 0,
+    totalOrders: 0,
+    totalFavorites: 0,
+    averageRating: 0,
+    totalViews: 0,
+    totalFollowers: 0
+  });
+
+  // Fetch profile data from backend
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      if (!user) return;
+      
+      try {
+        setProfileLoading(true);
+        
+        // Fetch user profile from your backend
+        const backendProfile = await profileApi.getProfile();
+        const transformedProfile = transformUserProfile(backendProfile);
+        
+        // Calculate profile completion
+        const completion = calculateProfileCompletion(user, transformedProfile);
+        transformedProfile.profileCompletion = completion;
+        
+        setProfileData(transformedProfile);
+        
+        // Fetch user stats
+        const stats = await profileApi.getUserStats();
+        setStatsData(stats);
+        
+      } catch (error) {
+        console.error('Failed to fetch profile data:', error);
+        
+        // Fallback to basic profile data from Firebase user
+        const fallbackProfile = {
+          bio: 'Pet lover and enthusiast. Welcome to Fureverly!',
+          location: 'Location not specified',
+          phone: '',
+          website: '',
+          joinDate: user?.metadata?.creationTime ? new Date(user.metadata.creationTime) : new Date(),
+          isVerified: false,
+          profileCompletion: calculateProfileCompletion(user, {})
+        };
+        
+        setProfileData(fallbackProfile);
+        
+        // Show a user-friendly message instead of error
+        toast.error('Unable to load profile data. Using basic information.');
+      } finally {
+        setProfileLoading(false);
+      }
+    };
+
+    fetchProfileData();
+  }, [user]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -22,146 +114,268 @@ const MyProfile = () => {
 
     try {
       setLoading(true);
+      
+      // Update Firebase profile first (this is more reliable)
       await updateProfile(user, { displayName, photoURL });
+      
+      // Try to update backend profile
+      try {
+        await profileApi.updateProfile({
+          name: displayName,
+          profileImage: photoURL
+        });
+        
+        // Refresh profile data from backend
+        const backendProfile = await profileApi.getProfile();
+        const transformedProfile = transformUserProfile(backendProfile);
+        const completion = calculateProfileCompletion(user, transformedProfile);
+        transformedProfile.profileCompletion = completion;
+        setProfileData(transformedProfile);
+        
+      } catch (backendError) {
+        console.error('Backend update failed:', backendError);
+        // Firebase update succeeded, so we can still show success
+        // but note that backend sync failed
+        toast.success('Profile updated! (Some features may be limited)');
+      }
+      
       toast.success('Profile updated successfully!');
       setIsEditing(false);
-      setLoading(false);
+      
     } catch (error) {
-      console.error(error);
+      console.error('Profile update failed:', error);
       toast.error('Failed to update profile.');
+    } finally {
       setLoading(false);
     }
   };
 
+  const getProfileCompletionColor = (percentage) => {
+    if (percentage >= 80) return 'text-green-600';
+    if (percentage >= 60) return 'text-yellow-600';
+    return 'text-red-600';
+  };
+
   return (
-    <div className="flex justify-center items-center min-h-screen bg-linear-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
       <Toaster position="top-center" />
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-white dark:bg-gray-900 shadow-xl rounded-2xl p-8 w-full max-w-md border border-gray-200 dark:border-gray-700 relative"
-      >
-        <div className="flex flex-col items-center">
-          <motion.img
-            src={user?.photoURL || 'https://i.ibb.co/2FsfXqM/user.png'}
-            alt="Profile"
-            className="w-28 h-28 rounded-full shadow-md object-cover mb-4 border-4 border-indigo-500"
-            whileHover={{ scale: 1.05 }}
-          />
-
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
-            {user?.displayName || 'Anonymous User'}
-          </h2>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
-            Member since 2025
-          </p>
-
-          <div className="w-full border-t border-gray-200 dark:border-gray-700 my-4"></div>
-
-          <div className="space-y-4 w-full">
-            <div className="flex items-center gap-3">
-              <Mail className="text-indigo-500" size={20} />
-              <span className="text-gray-700 dark:text-gray-300">
-                {user?.email || 'No email available'}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <CalendarDays className="text-indigo-500" size={20} />
-              <span className="text-gray-700 dark:text-gray-300">
-                Joined:{' '}
-                {user?.metadata?.creationTime
-                  ? new Date(user.metadata.creationTime).toLocaleDateString()
-                  : 'N/A'}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <User className="text-indigo-500" size={20} />
-              <span className="text-gray-700 dark:text-gray-300">
-                UID: {user?.uid || 'Unavailable'}
-              </span>
-            </div>
+      
+      {profileLoading ? (
+        <div className="max-w-4xl mx-auto">
+          <div className="flex justify-center items-center min-h-[400px]">
+            <Loader2 className="animate-spin text-[#F5B22C]" size={48} />
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-4xl mx-auto space-y-6">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              My Profile
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Manage your account information and preferences
+            </p>
           </div>
 
-          {/* Edit Button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setIsEditing(true)}
-            className="mt-8 bg-indigo-600 text-white py-2 px-5 rounded-xl flex items-center gap-2 hover:bg-indigo-700 transition-all"
-          >
-            <Edit3 size={18} /> Edit Profile
-          </motion.button>
-        </div>
+          {/* Profile Overview Card */}
+          <ProfileCard
+            user={user}
+            profileData={profileData}
+            onEditClick={() => setIsEditing(true)}
+            className="shadow-lg"
+          />
 
-        {/* Modal */}
-        {isEditing && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
-          >
-            <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.3 }}
-              className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-xl w-[90%] max-w-sm"
-            >
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4 text-center">
-                Update Profile
+          {/* Profile Statistics */}
+          <ProfileStats stats={statsData} />
+
+          {/* Contact & Account Information */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Contact Information */}
+            <Card padding="lg" shadow="md">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                <User size={20} />
+                Contact Information
               </h3>
-              <form onSubmit={handleUpdate} className="space-y-4">
-                <div>
-                  <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <Mail className="text-[#F5B22C]" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Email</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {user?.email || 'No email available'}
+                    </p>
+                  </div>
                 </div>
+                
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <Phone className="text-[#F5B22C]" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Phone</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {profileData.phone || 'Not provided'}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <Globe className="text-[#F5B22C]" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Website</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {profileData.website || 'Not provided'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Card>
 
-                <div>
-                  <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
-                    Photo URL
-                  </label>
-                  <input
-                    type="text"
-                    value={photoURL}
-                    onChange={(e) => setPhotoURL(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
+            {/* Account Information */}
+            <Card padding="lg" shadow="md">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                <Shield size={20} />
+                Account Information
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <CalendarDays className="text-[#F5B22C]" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Member Since</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {profileData.joinDate.toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      })}
+                    </p>
+                  </div>
                 </div>
+                
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <User className="text-[#F5B22C]" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">User ID</p>
+                    <p className="font-medium text-gray-900 dark:text-white font-mono text-sm">
+                      {user?.uid?.substring(0, 8) || 'N/A'}...
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <CheckCircle className="text-[#F5B22C]" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Verification Status</p>
+                    <p className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                      {profileData.isVerified ? (
+                        <>
+                          <CheckCircle className="text-green-500" size={16} />
+                          Verified Account
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-yellow-500">Pending Verification</span>
+                        </>
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
 
-                <div className="flex justify-end gap-3 mt-4">
-                  <button
-                    type="button"
-                    onClick={() => setIsEditing(false)}
-                    className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="px-5 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 flex items-center gap-2"
-                  >
-                    {loading ? (
-                      <Loader2 className="animate-spin" size={18} />
-                    ) : (
-                      'Update'
-                    )}
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </motion.div>
+          {/* Quick Actions */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card padding="lg" hover className="text-center">
+              <Activity className="text-[#F5B22C] mx-auto mb-4" size={32} />
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                Activity
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                View your recent activity and interactions
+              </p>
+              <Button variant="outline" size="sm" fullWidth>
+                View Activity
+              </Button>
+            </Card>
+
+            <Card padding="lg" hover className="text-center">
+              <Settings className="text-[#F5B22C] mx-auto mb-4" size={32} />
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                Settings
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                Manage your account preferences and privacy
+              </p>
+              <Link to="/profile-settings">
+                <Button variant="outline" size="sm" fullWidth>
+                  Open Settings
+                </Button>
+              </Link>
+            </Card>
+
+            <Card padding="lg" hover className="text-center">
+              <Star className="text-[#F5B22C] mx-auto mb-4" size={32} />
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                Favorites
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                Access your saved items and favorites
+              </p>
+              <Button variant="outline" size="sm" fullWidth>
+                View Favorites
+              </Button>
+            </Card>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Profile Modal */}
+      <Modal
+        isOpen={isEditing}
+        onClose={() => setIsEditing(false)}
+        title="Edit Profile"
+        size="md"
+      >
+        <form onSubmit={handleUpdate} className="space-y-6">
+          <Input
+            label="Display Name"
+            type="text"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            placeholder="Enter your display name"
+            required
+            leftIcon={<User size={18} />}
+          />
+
+          <Input
+            label="Profile Photo URL"
+            type="url"
+            value={photoURL}
+            onChange={(e) => setPhotoURL(e.target.value)}
+            placeholder="https://example.com/photo.jpg"
+            leftIcon={<Camera size={18} />}
+            helperText="Enter a valid URL for your profile picture"
+          />
+
+          <div className="flex justify-end gap-3 pt-4">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setIsEditing(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              loading={loading}
+              leftIcon={loading ? <Loader2 className="animate-spin" size={18} /> : <Edit3 size={18} />}
+            >
+              {loading ? 'Updating...' : 'Update Profile'}
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 };
