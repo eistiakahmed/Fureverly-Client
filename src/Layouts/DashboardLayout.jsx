@@ -2,21 +2,22 @@ import React, { useContext, useState } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router';
 import { AuthContext } from '../Context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Home, 
-  User, 
-  Package, 
-  ShoppingCart, 
-  Plus, 
-  Users, 
-  BarChart3, 
-  Settings, 
+import {
+  Home,
+  User,
+  Package,
+  ShoppingCart,
+  Plus,
+  Users,
+  BarChart3,
+  Settings,
   LogOut,
   Menu,
   X,
-  ChevronDown
+  ChevronDown,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import Logo from '../assets/logo.png';
 
 const DashboardLayout = () => {
   const { user, userRole, logOut } = useContext(AuthContext);
@@ -35,20 +36,54 @@ const DashboardLayout = () => {
 
   const userMenuItems = [
     { to: '/dashboard', label: 'Dashboard Home', icon: <Home size={20} /> },
-    { to: '/dashboard/my-listings', label: 'My Listings', icon: <Package size={20} /> },
-    { to: '/dashboard/my-orders', label: 'My Orders', icon: <ShoppingCart size={20} /> },
-    { to: '/dashboard/add-listing', label: 'Add Listing', icon: <Plus size={20} /> },
+    {
+      to: '/dashboard/my-listings',
+      label: 'My Listings',
+      icon: <Package size={20} />,
+    },
+    {
+      to: '/dashboard/my-orders',
+      label: 'My Orders',
+      icon: <ShoppingCart size={20} />,
+    },
+    {
+      to: '/dashboard/add-listing',
+      label: 'Add Listing',
+      icon: <Plus size={20} />,
+    },
   ];
 
   const adminMenuItems = [
-    { to: '/dashboard/admin', label: 'Admin Overview', icon: <BarChart3 size={20} /> },
-    { to: '/dashboard/admin/users', label: 'Manage Users', icon: <Users size={20} /> },
-    { to: '/dashboard/admin/products', label: 'Manage Products', icon: <Package size={20} /> },
-    { to: '/dashboard/admin/orders', label: 'Manage Orders', icon: <ShoppingCart size={20} /> },
-    { to: '/dashboard/admin/settings', label: 'Settings', icon: <Settings size={20} /> },
+    {
+      to: '/dashboard/admin',
+      label: 'Admin Overview',
+      icon: <BarChart3 size={20} />,
+    },
+    {
+      to: '/dashboard/admin/users',
+      label: 'Manage Users',
+      icon: <Users size={20} />,
+    },
+    {
+      to: '/dashboard/admin/products',
+      label: 'Manage Products',
+      icon: <Package size={20} />,
+    },
+    {
+      to: '/dashboard/admin/orders',
+      label: 'Manage Orders',
+      icon: <ShoppingCart size={20} />,
+    },
+    {
+      to: '/dashboard/admin/settings',
+      label: 'Settings',
+      icon: <Settings size={20} />,
+    },
   ];
 
-  const menuItems = userRole === 'admin' ? [...userMenuItems, ...adminMenuItems] : userMenuItems;
+  console.log(userRole);
+
+  const menuItems = userRole === 'admin' ? [...adminMenuItems] : userMenuItems;
 
   const SidebarLink = ({ item, mobile = false }) => (
     <NavLink
@@ -68,7 +103,7 @@ const DashboardLayout = () => {
   );
 
   return (
-    <div className="min-h-screen max-w-7xl mx-auto bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen max-w-11/12 mx-auto bg-gray-50 dark:bg-gray-900">
       {/* Top Navbar */}
       <nav className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
         <div className="px-4 sm:px-6 lg:px-8">
@@ -83,7 +118,7 @@ const DashboardLayout = () => {
               </button>
 
               <div className="flex items-center gap-3">
-                <img src="/logo.png" alt="Fureverly" className="h-8 w-8" />
+                <img src={Logo} alt="Fureverly" className="h-8 w-8" />
                 <h1 className="text-xl font-bold text-[#092052] dark:text-white">
                   Dashboard
                 </h1>
@@ -99,7 +134,7 @@ const DashboardLayout = () => {
                 <img
                   src={user?.photoURL || 'https://i.ibb.co/2FsfXqM/user.png'}
                   alt="Profile"
-                  className="w-8 h-8 rounded-full object-cover"
+                  className="w-12 h-12 object-cover rounded-full border-2 border-orange-300"
                 />
                 <div className="hidden sm:block text-left">
                   <p className="text-sm font-medium text-gray-900 dark:text-white">
@@ -162,7 +197,7 @@ const DashboardLayout = () => {
 
       <div className="flex">
         {/* Desktop Sidebar */}
-        <aside className="hidden lg:block w-64 bg-white dark:bg-gray-800 shadow-lg border-r border-gray-200 dark:border-gray-700">
+        <aside className="hidden lg:block w-64 min-h-[48vw] bg-white dark:bg-gray-800 shadow-lg border-r border-gray-200 dark:border-gray-700">
           <div className="p-6">
             <nav className="space-y-2">
               {menuItems.map((item, index) => (

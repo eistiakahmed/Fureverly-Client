@@ -99,9 +99,9 @@ const Login = () => {
             Best experience for your lovely pets!
           </p>
           <img
-            src="https://i.ibb.co/B2MHQc1K/slink-Dogs.png"
-            alt="Dog"
-            className="w-60 h-auto mx-auto drop-shadow-lg"
+            src="https://i.ibb.co.com/Xxvbkzq6/A-stock-photograph-of-several-dogs-next-to-each-other-There-are-5-plus-different-breeds-of-dogs.png"
+            alt="Pets"
+            className="w-70 h-auto mx-auto drop-shadow-lg"
           />
           {/* Decorative circles */}
           <div className="absolute top-6 left-6 w-6 h-6 bg-white rounded-full shadow hidden md:block"></div>
@@ -151,7 +151,7 @@ const Login = () => {
               </button>
             </div>
 
-            <p 
+            <p
               onClick={handleForgotPassword}
               className="text-right font-medium hover:text-blue-600 cursor-pointer text-sm dark:text-gray-300 transition-colors"
             >

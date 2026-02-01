@@ -102,11 +102,10 @@ const Navbar = () => {
   return (
     <>
       <nav className="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-11/12 mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 lg:h-20">
-            
             {/* Logo */}
-            <motion.div 
+            <motion.div
               className="flex items-center gap-3"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -128,7 +127,7 @@ const Navbar = () => {
             </motion.div>
 
             {/* Desktop Navigation */}
-            <motion.div 
+            <motion.div
               className="hidden lg:flex items-center space-x-2"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -147,13 +146,12 @@ const Navbar = () => {
             </motion.div>
 
             {/* Right Side Actions */}
-            <motion.div 
+            <motion.div
               className="flex items-center gap-3"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              
               {/* Theme Toggle */}
               <motion.button
                 onClick={toggleTheme}
@@ -196,17 +194,22 @@ const Navbar = () => {
                       className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300"
                       whileHover={{ scale: 1.05 }}
                     >
-                      <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full border-2 border-[#F5B22C] overflow-hidden">
+                      <div className="avatar">
                         {user.photoURL ? (
-                          <img
-                            src={user.photoURL}
-                            alt="Profile"
-                            className="w-full h-full object-cover"
-                            referrerPolicy="no-referrer"
-                          />
+                          <div className="w-12 rounded-full ring ring-[#F5B22C] ring-offset-base-100 ring-offset-2">
+                            <img
+                              src={user.photoURL}
+                              alt="Profile"
+                              className=''
+                              referrerPolicy="no-referrer"
+                            />
+                          </div>
                         ) : (
                           <div className="w-full h-full bg-[#F5B22C]/10 flex items-center justify-center">
-                            <BsPersonCircle className="text-[#F5B22C]" size={24} />
+                            <BsPersonCircle
+                              className="text-[#F5B22C]"
+                              size={24}
+                            />
                           </div>
                         )}
                       </div>
@@ -323,13 +326,16 @@ const Navbar = () => {
                     <NavLinkComponent link={link} mobile />
                   </motion.div>
                 ))}
-                
+
                 {/* Mobile User Info */}
                 {user && (
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: 0.1 * visibleLinks.length }}
+                    transition={{
+                      duration: 0.3,
+                      delay: 0.1 * visibleLinks.length,
+                    }}
                     className="pt-4 border-t border-gray-200 dark:border-gray-700"
                   >
                     <div className="flex items-center gap-3 px-4 py-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
@@ -343,7 +349,10 @@ const Navbar = () => {
                           />
                         ) : (
                           <div className="w-full h-full bg-[#F5B22C]/10 flex items-center justify-center">
-                            <BsPersonCircle className="text-[#F5B22C]" size={20} />
+                            <BsPersonCircle
+                              className="text-[#F5B22C]"
+                              size={20}
+                            />
                           </div>
                         )}
                       </div>
@@ -356,7 +365,7 @@ const Navbar = () => {
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="mt-3 space-y-2">
                       <Link
                         to="/myProfile"
@@ -385,8 +394,8 @@ const Navbar = () => {
         </AnimatePresence>
       </nav>
 
-      <Toaster 
-        position="top-center" 
+      <Toaster
+        position="top-center"
         reverseOrder={false}
         toastOptions={{
           duration: 4000,

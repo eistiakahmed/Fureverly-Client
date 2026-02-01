@@ -3,11 +3,11 @@ import Banner from '../../Components/Banner/Banner';
 import Category from '../../Components/Category/Category';
 import ProductGrid from '../../Components/listings/ProductGrid';
 import { Link } from 'react-router';
-import { 
-  HeartHandshake, 
-  PawPrint, 
-  UsersRound, 
-  Webhook, 
+import {
+  HeartHandshake,
+  PawPrint,
+  UsersRound,
+  Webhook,
   Star,
   Shield,
   Clock,
@@ -17,7 +17,7 @@ import {
   Mail,
   ArrowRight,
   Zap,
-  Globe
+  Globe,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -27,7 +27,7 @@ const Home = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('https://fureverly-server.vercel.app/latestListing')
+    fetch('https://fureverly-server.vercel.app/products/latest')
       .then((res) => res.json())
       .then((data) => {
         setListing(data);
@@ -68,33 +68,54 @@ const Home = () => {
   ];
 
   const stats = [
-    { icon: Heart, number: '2,500+', label: 'Pets Adopted', color: 'text-red-500' },
-    { icon: Users, number: '5,000+', label: 'Happy Families', color: 'text-blue-500' },
-    { icon: Award, number: '98%', label: 'Success Rate', color: 'text-green-500' },
-    { icon: Globe, number: '50+', label: 'Cities Served', color: 'text-purple-500' }
+    {
+      icon: Heart,
+      number: '2,500+',
+      label: 'Pets Adopted',
+      color: 'text-red-500',
+    },
+    {
+      icon: Users,
+      number: '5,000+',
+      label: 'Happy Families',
+      color: 'text-blue-500',
+    },
+    {
+      icon: Award,
+      number: '98%',
+      label: 'Success Rate',
+      color: 'text-green-500',
+    },
+    {
+      icon: Globe,
+      number: '50+',
+      label: 'Cities Served',
+      color: 'text-purple-500',
+    },
   ];
 
   const features = [
     {
       icon: Shield,
       title: 'Verified Listings',
-      description: 'All pets are health-checked and verified by our expert team'
+      description:
+        'All pets are health-checked and verified by our expert team',
     },
     {
       icon: Clock,
       title: '24/7 Support',
-      description: 'Round-the-clock assistance for all your pet adoption needs'
+      description: 'Round-the-clock assistance for all your pet adoption needs',
     },
     {
       icon: Heart,
       title: 'Love Guarantee',
-      description: 'We ensure every pet finds a loving, forever home'
+      description: 'We ensure every pet finds a loving, forever home',
     },
     {
       icon: Zap,
       title: 'Quick Process',
-      description: 'Streamlined adoption process to bring your pet home faster'
-    }
+      description: 'Streamlined adoption process to bring your pet home faster',
+    },
   ];
 
   const services = [
@@ -102,69 +123,80 @@ const Home = () => {
       title: 'Pet Adoption',
       description: 'Find your perfect companion from our verified pet listings',
       icon: PawPrint,
-      color: 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400'
+      color: 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400',
     },
     {
       title: 'Pet Care Supplies',
-      description: 'Everything you need to keep your furry friend happy and healthy',
+      description:
+        'Everything you need to keep your furry friend happy and healthy',
       icon: HeartHandshake,
-      color: 'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400'
+      color:
+        'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400',
     },
     {
       title: 'Expert Guidance',
       description: 'Professional advice on pet care, training, and health',
       icon: Award,
-      color: 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400'
+      color:
+        'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400',
     },
     {
       title: 'Community Support',
       description: 'Join a community of pet lovers and share experiences',
       icon: UsersRound,
-      color: 'bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400'
-    }
+      color:
+        'bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400',
+    },
   ];
 
   const blogs = [
     {
       title: 'First-Time Pet Owner Guide',
       excerpt: 'Everything you need to know before bringing your new pet home',
-      image: 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400',
+      image:
+        'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400',
       date: 'Dec 15, 2024',
-      readTime: '5 min read'
+      readTime: '5 min read',
     },
     {
       title: 'Pet Nutrition Essentials',
       excerpt: 'Learn about proper nutrition for different types of pets',
-      image: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400',
+      image:
+        'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400',
       date: 'Dec 12, 2024',
-      readTime: '7 min read'
+      readTime: '7 min read',
     },
     {
       title: 'Creating a Pet-Friendly Home',
       excerpt: 'Tips to make your home safe and comfortable for your new pet',
-      image: 'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?w=400',
+      image:
+        'https://images.unsplash.com/photo-1574144611937-0df059b5ef3e?w=400',
       date: 'Dec 10, 2024',
-      readTime: '6 min read'
-    }
+      readTime: '6 min read',
+    },
   ];
 
   const faqs = [
     {
       question: 'How do I adopt a pet from Fureverly?',
-      answer: 'Simply browse our listings, contact the pet owner, and follow our guided adoption process. We provide support throughout the journey.'
+      answer:
+        'Simply browse our listings, contact the pet owner, and follow our guided adoption process. We provide support throughout the journey.',
     },
     {
       question: 'Are all pets health-checked?',
-      answer: 'Yes, all pets listed on our platform undergo health verification by certified veterinarians before being listed for adoption.'
+      answer:
+        'Yes, all pets listed on our platform undergo health verification by certified veterinarians before being listed for adoption.',
     },
     {
-      question: 'What if my adopted pet doesn\'t adapt well?',
-      answer: 'We offer a 30-day support period with free consultations to help with the transition. Our team is always here to help.'
+      question: "What if my adopted pet doesn't adapt well?",
+      answer:
+        'We offer a 30-day support period with free consultations to help with the transition. Our team is always here to help.',
     },
     {
       question: 'Can I list my pet for adoption?',
-      answer: 'Absolutely! Create an account and use our simple listing process to find a loving home for your pet.'
-    }
+      answer:
+        'Absolutely! Create an account and use our simple listing process to find a loving home for your pet.',
+    },
   ];
 
   return (
@@ -191,10 +223,11 @@ const Home = () => {
               Why Choose Fureverly?
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              We're committed to connecting pets with loving families through our trusted platform
+              We're committed to connecting pets with loving families through
+              our trusted platform
             </p>
           </motion.div>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
               <motion.div
@@ -280,7 +313,8 @@ const Home = () => {
               Our Services
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Comprehensive pet care solutions for every stage of your pet's life
+              Comprehensive pet care solutions for every stage of your pet's
+              life
             </p>
           </motion.div>
 
@@ -295,7 +329,9 @@ const Home = () => {
                 className="bg-white dark:bg-gray-700 rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-2"
               >
                 <div className="flex items-start gap-4">
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${service.color}`}>
+                  <div
+                    className={`w-12 h-12 rounded-lg flex items-center justify-center ${service.color}`}
+                  >
                     <service.icon size={24} />
                   </div>
                   <div>
@@ -356,39 +392,60 @@ const Home = () => {
               viewport={{ once: true }}
             >
               <h2 className="text-4xl md:text-5xl font-extrabold text-[#092052] dark:text-white mb-6 flex justify-center items-center gap-3 YesevaOne">
-                <HeartHandshake className="text-pink-600" /> Why Adopt from Fureverly?
+                <HeartHandshake className="text-pink-600" /> Why Adopt from
+                Fureverly?
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed max-w-4xl mx-auto mb-10">
-                Every pet deserves love, not a price tag. At <strong>Fureverly</strong>, we connect rescued animals with loving
-                homes. Adoption gives these pets a second chance — and you a loyal companion. Be their hero. Adopt, don't shop!
+                Every pet deserves love, not a price tag. At{' '}
+                <strong>Fureverly</strong>, we connect rescued animals with
+                loving homes. Adoption gives these pets a second chance — and
+                you a loyal companion. Be their hero. Adopt, don't shop!
               </p>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
                 <motion.div
                   className="bg-[#fef3f3] px-6 py-8 rounded-2xl shadow-sm"
                   whileHover={{ scale: 1.05 }}
                 >
                   <PawPrint className="mx-auto text-pink-500 mb-4" size={48} />
-                  <h3 className="font-semibold text-gray-700 text-lg mb-2">Save Lives</h3>
-                  <p className="text-gray-600 text-sm">Give rescued pets a second chance at happiness</p>
+                  <h3 className="font-semibold text-gray-700 text-lg mb-2">
+                    Save Lives
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Give rescued pets a second chance at happiness
+                  </p>
                 </motion.div>
-                
+
                 <motion.div
                   className="bg-[#eef6ff] px-6 py-8 rounded-2xl shadow-sm"
                   whileHover={{ scale: 1.05 }}
                 >
-                  <UsersRound className="mx-auto text-blue-500 mb-4" size={48} />
-                  <h3 className="font-semibold text-gray-700 text-lg mb-2">Join Community</h3>
-                  <p className="text-gray-600 text-sm">Connect with caring pet lovers worldwide</p>
+                  <UsersRound
+                    className="mx-auto text-blue-500 mb-4"
+                    size={48}
+                  />
+                  <h3 className="font-semibold text-gray-700 text-lg mb-2">
+                    Join Community
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Connect with caring pet lovers worldwide
+                  </p>
                 </motion.div>
-                
+
                 <motion.div
                   className="bg-[#f0fff4] px-6 py-8 rounded-2xl shadow-sm"
                   whileHover={{ scale: 1.05 }}
                 >
-                  <HeartHandshake className="mx-auto text-green-500 mb-4" size={48} />
-                  <h3 className="font-semibold text-gray-700 text-lg mb-2">Promote Kindness</h3>
-                  <p className="text-gray-600 text-sm">Spread love and compassion in the world</p>
+                  <HeartHandshake
+                    className="mx-auto text-green-500 mb-4"
+                    size={48}
+                  />
+                  <h3 className="font-semibold text-gray-700 text-lg mb-2">
+                    Promote Kindness
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    Spread love and compassion in the world
+                  </p>
                 </motion.div>
               </div>
             </motion.div>
@@ -443,7 +500,11 @@ const Home = () => {
                   </p>
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="text-yellow-400 fill-current" size={16} />
+                      <Star
+                        key={i}
+                        className="text-yellow-400 fill-current"
+                        size={16}
+                      />
                     ))}
                   </div>
                 </div>
@@ -466,7 +527,8 @@ const Home = () => {
               Pet Care Insights
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Expert advice and tips to help you provide the best care for your furry friends
+              Expert advice and tips to help you provide the best care for your
+              furry friends
             </p>
           </motion.div>
 
@@ -521,7 +583,8 @@ const Home = () => {
               Frequently Asked Questions
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Get answers to common questions about pet adoption and our services
+              Get answers to common questions about pet adoption and our
+              services
             </p>
           </motion.div>
 
@@ -568,9 +631,10 @@ const Home = () => {
               Stay Connected
             </h2>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Get the latest updates on new pets, adoption success stories, and pet care tips
+              Get the latest updates on new pets, adoption success stories, and
+              pet care tips
             </p>
-            
+
             <div className="max-w-md mx-auto">
               <div className="flex gap-3">
                 <input
@@ -603,9 +667,10 @@ const Home = () => {
               Ready to Find Your Perfect Companion?
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
-              Thousands of loving pets are waiting for their forever homes. Start your adoption journey today!
+              Thousands of loving pets are waiting for their forever homes.
+              Start your adoption journey today!
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/petsAndSupplies"

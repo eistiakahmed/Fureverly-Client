@@ -43,7 +43,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '/petsAndSupplies',
-        loader: () => fetch('https://fureverly-server.vercel.app/product'),
+        loader: () => fetch('https://fureverly-server.vercel.app/products'),
         element: <PetsAndSupplies />,
       },
       {

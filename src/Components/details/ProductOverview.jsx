@@ -8,7 +8,7 @@ const ProductOverview = ({ product, onAdopt, onBuy, onContact }) => {
     name,
     category,
     description,
-    Price = 0,
+    price: Price = 0, // Normalize price field
     location,
     date,
     email,

@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../Context/AuthContext';
 import { RingLoader } from 'react-spinners';
 import { FaRegFilePdf } from 'react-icons/fa6';
@@ -7,7 +7,7 @@ import autoTable from 'jspdf-autotable';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const MyOrders = () => {
-  const { user } = use(AuthContext);
+  const { user } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,13 +15,63 @@ const MyOrders = () => {
     if (!user?.email) return;
 
     setLoading(true);
+
+    // Try to fetch from server first
     fetch(`https://fureverly-server.vercel.app/orders?email=${user.email}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setOrders(data);
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Server orders not available');
+        }
+        return res.json();
+      })
+      .then((serverOrders) => {
+        console.log('Server orders:', serverOrders);
+
+        // Also get local orders as fallback
+        const localOrders = JSON.parse(
+          localStorage.getItem('fureverly_orders') || '[]'
+        )
+          .filter((order) => order.userEmail === user.email)
+          .map((order) => ({
+            ...order,
+            _id: order.id,
+            date: order.pickupDate,
+            source: 'local',
+          }));
+
+        // Combine server and local orders, removing duplicates
+        const allOrders = [...serverOrders, ...localOrders];
+        const uniqueOrders = allOrders.filter(
+          (order, index, self) =>
+            index ===
+            self.findIndex(
+              (o) =>
+                o.productId === order.productId &&
+                o.userEmail === order.userEmail
+            )
+        );
+
+        setOrders(uniqueOrders);
         setLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log('Server orders failed, using local storage:', err);
+
+        // Fallback to local storage only
+        const localOrders = JSON.parse(
+          localStorage.getItem('fureverly_orders') || '[]'
+        )
+          .filter((order) => order.userEmail === user.email)
+          .map((order) => ({
+            ...order,
+            _id: order.id,
+            date: order.pickupDate,
+            source: 'local',
+          }));
+
+        setOrders(localOrders);
+        setLoading(false);
+      });
   }, [user]);
 
   const handleDownloadReport = () => {
@@ -119,6 +169,7 @@ const MyOrders = () => {
                   'Address',
                   'Date',
                   'Phone',
+                  'Status',
                 ].map((head, index) => (
                   <th
                     key={index}
@@ -164,12 +215,25 @@ const MyOrders = () => {
                     <td className="py-3 px-2 text-center text-sm sm:text-base">
                       {order.phone}
                     </td>
+                    <td className="py-3 px-2 text-center text-sm sm:text-base">
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          order.source === 'local'
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : 'bg-green-100 text-green-800'
+                        }`}
+                      >
+                        {order.source === 'local'
+                          ? 'Pending Sync'
+                          : 'Confirmed'}
+                      </span>
+                    </td>
                   </motion.tr>
                 ))
               ) : (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={9}
                     className="py-6 text-center text-gray-500 font-medium text-sm sm:text-base"
                   >
                     No orders found.

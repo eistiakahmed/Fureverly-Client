@@ -62,7 +62,7 @@ const PetsAndSupplies = () => {
     } else {
       console.log('No valid data received, trying to fetch manually');
       // Fallback: try to fetch data manually
-      fetch('https://fureverly-server.vercel.app/product')
+      fetch('https://fureverly-server.vercel.app/products')
         .then(res => res.json())
         .then(fetchedData => {
           console.log('Manual fetch result:', fetchedData);

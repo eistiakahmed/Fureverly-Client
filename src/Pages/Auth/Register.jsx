@@ -72,7 +72,7 @@ const Register = () => {
           transition={{ duration: 0.6 }}
         >
           {/* Left Side */}
-          <div className="md:w-1/2 bg-gradient-to-br from-[#FCDFA3] to-[#F7C568] p-10 flex flex-col justify-center items-center text-center relative">
+          <div className="md:w-1/2 bg-linear-to-br from-[#FCDFA3] to-[#F7C568] p-10 flex flex-col justify-center items-center text-center relative">
             <h2 className="text-3xl font-extrabold text-gray-800 dark:text-gray-900 mb-2">
               Join Fureverly
             </h2>
@@ -80,7 +80,7 @@ const Register = () => {
               Create an account for your pets' best experience!
             </p>
             <img
-              src="https://i.ibb.co/B2MHQc1K/slink-Dogs.png"
+              src="https://i.ibb.co.com/Xxvbkzq6/A-stock-photograph-of-several-dogs-next-to-each-other-There-are-5-plus-different-breeds-of-dogs.png"
               alt="Dog"
               className="w-56 md:w-72 mx-auto drop-shadow-lg"
             />

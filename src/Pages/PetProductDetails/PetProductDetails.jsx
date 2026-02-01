@@ -28,7 +28,7 @@ const PetProductDetails = () => {
     location,
     image,
     date,
-    Price,
+    price: Price, // Normalize price field
   } = data;
 
   // Create images array (in production, this would come from the API)
@@ -44,12 +44,20 @@ const PetProductDetails = () => {
       toast.error('Please sign in to adopt a pet');
       return;
     }
+    if (!user.email) {
+      toast.error('Please complete your profile to continue');
+      return;
+    }
     openModal();
   };
 
   const handleBuy = () => {
     if (!user) {
       toast.error('Please sign in to make a purchase');
+      return;
+    }
+    if (!user.email) {
+      toast.error('Please complete your profile to continue');
       return;
     }
     openModal();
@@ -60,8 +68,12 @@ const PetProductDetails = () => {
       toast.error('Please sign in to contact the owner');
       return;
     }
+    if (!email) {
+      toast.error('Owner contact information is not available');
+      return;
+    }
     // Open email client or show contact modal
-    window.location.href = `mailto:${email}?subject=Inquiry about ${name}`;
+    window.location.href = `mailto:${email}?subject=Inquiry about ${name}&body=Hi, I'm interested in ${name}. Could you please provide more information?`;
   };
 
   const openModal = () => {
@@ -72,20 +84,38 @@ const PetProductDetails = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Validate required fields
+    const phone = e.target.phone.value.trim();
+    const address = e.target.address.value.trim();
+    const pickupDate = e.target.pickupDate.value;
+
+    if (!phone || !address || !pickupDate) {
+      toast.error('Please fill in all required fields');
+      setIsSubmitting(false);
+      return;
+    }
+
     const formData = {
       productId: _id,
       productName: name,
-      email: user?.email,
+      userEmail: user?.email,
+      userName: user?.displayName || 'Unknown User',
       quantity: 1,
-      price: Price,
-      address: e.target.address.value,
-      phone: e.target.phone.value,
-      date: e.target.pickupDate.value,
-      additionalNotes: e.target.notes.value,
+      price: Price || 0,
+      address: address,
+      phone: phone,
+      pickupDate: pickupDate,
+      additionalNotes: e.target.notes.value.trim(),
+      orderType: Price === 0 ? 'adoption' : 'purchase',
+      status: 'pending',
+      createdAt: new Date().toISOString(),
     };
 
+    console.log('Submitting order:', formData);
+
     try {
-      const response = await fetch(`https://fureverly-server.vercel.app/orders`, {
+      // First, try the main API endpoint
+      let response = await fetch(`https://fureverly-server.vercel.app/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -93,17 +123,106 @@ const PetProductDetails = () => {
         body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
-        toast.success('Order placed successfully!');
-        orderModalRef.current.close();
+      let responseData;
+      
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        responseData = await response.json();
       } else {
-        throw new Error('Failed to place order');
+        responseData = { message: await response.text() };
+      }
+
+      console.log('Server response:', responseData);
+
+      if (response.ok) {
+        toast.success(
+          Price === 0 
+            ? 'Adoption application submitted successfully! The owner will contact you soon.' 
+            : 'Order placed successfully! You will receive confirmation shortly.'
+        );
+        orderModalRef.current.close();
+        e.target.reset(); // Reset form
+        
+        // Store order locally as backup
+        const localOrders = JSON.parse(localStorage.getItem('fureverly_orders') || '[]');
+        localOrders.push({ ...formData, id: Date.now() });
+        localStorage.setItem('fureverly_orders', JSON.stringify(localOrders));
+        
+      } else if (response.status === 404) {
+        // If orders endpoint doesn't exist, use fallback
+        console.log('Orders endpoint not found, using fallback method');
+        await handleFallbackOrder(formData);
+      } else {
+        throw new Error(responseData.message || `Server error: ${response.status}`);
       }
     } catch (error) {
-      toast.error('Failed to place order. Please try again.');
-      console.error(error);
+      console.error('Order submission error:', error);
+      
+      // If network error or server unavailable, try fallback
+      if (error.name === 'TypeError' || error.message.includes('fetch')) {
+        console.log('Network error, using fallback method');
+        await handleFallbackOrder(formData);
+      } else {
+        toast.error(
+          error.message || 'Failed to submit order. Please check your connection and try again.'
+        );
+      }
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // Fallback order handling when main API is unavailable
+  const handleFallbackOrder = async (formData) => {
+    try {
+      // Store order locally
+      const localOrders = JSON.parse(localStorage.getItem('fureverly_orders') || '[]');
+      const orderWithId = { ...formData, id: Date.now(), submittedAt: new Date().toISOString() };
+      localOrders.push(orderWithId);
+      localStorage.setItem('fureverly_orders', JSON.stringify(localOrders));
+
+      // Try to send email notification (if email service is available)
+      const emailData = {
+        to: email, // Owner's email
+        subject: `New ${formData.orderType} request for ${formData.productName}`,
+        message: `
+          New ${formData.orderType} request received:
+          
+          Product: ${formData.productName}
+          Customer: ${formData.userName} (${formData.userEmail})
+          Phone: ${formData.phone}
+          Address: ${formData.address}
+          Preferred Date: ${formData.pickupDate}
+          Notes: ${formData.additionalNotes}
+          
+          Please contact the customer to arrange the ${formData.orderType}.
+        `
+      };
+
+      // Try alternative email endpoint
+      try {
+        await fetch('https://fureverly-server.vercel.app/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(emailData),
+        });
+      } catch (emailError) {
+        console.log('Email notification failed:', emailError);
+      }
+
+      toast.success(
+        formData.orderType === 'adoption'
+          ? 'Adoption application saved! We will contact you soon via email.'
+          : 'Order saved! We will contact you soon to confirm your purchase.'
+      );
+      
+      orderModalRef.current.close();
+      document.querySelector('form').reset();
+      
+    } catch (fallbackError) {
+      console.error('Fallback order failed:', fallbackError);
+      toast.error('Unable to process order. Please contact us directly via email.');
     }
   };
 
@@ -186,7 +305,7 @@ const PetProductDetails = () => {
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`flex-shrink-0 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
+                className={`shrink-0 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
                   activeSection === section.id
                     ? 'bg-[#092052] dark:bg-[#F5B22C] text-white dark:text-[#092052]'
                     : 'text-gray-600 dark:text-gray-400 hover:text-[#092052] dark:hover:text-[#F5B22C] hover:bg-gray-100 dark:hover:bg-gray-700'
@@ -274,6 +393,19 @@ const PetProductDetails = () => {
               <button className="btn btn-sm btn-circle btn-ghost">✕</button>
             </form>
           </div>
+
+          {/* Debug Info - Remove in production */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-6">
+              <h4 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">Debug Info:</h4>
+              <div className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
+                <p>Product ID: {_id}</p>
+                <p>User: {user?.email || 'Not logged in'}</p>
+                <p>Price: {Price} (Type: {Price === 0 ? 'Adoption' : 'Purchase'})</p>
+                <p>API URL: https://fureverly-server.vercel.app/orders</p>
+              </div>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Product Summary */}

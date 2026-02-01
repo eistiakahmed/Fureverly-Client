@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import slide1 from '../../assets/slide1.png';
-import slide2 from '../../assets/slide2.png';
-import slide3 from '../../assets/slide3.png';
+import slide2 from '../../assets/slide_5.png';
+import slide3 from '../../assets/slide_22.png';
 
 const Banner = () => {
   const slides = [
@@ -80,7 +80,7 @@ const Banner = () => {
           <img
             src={currentSlide.image}
             alt={currentSlide.title}
-            className="w-[320px] sm:w-[380px] lg:w-[480px] xl:w-[520px] object-contain drop-shadow-2xl rounded-2xl hover:scale-105 transition-transform duration-700"
+            className="w-[320px] sm:w-[380px] lg:w-[700px] object-contain drop-shadow-2xl rounded-2xl hover:scale-105 transition-transform duration-700"
           />
         </div>
       </div>
