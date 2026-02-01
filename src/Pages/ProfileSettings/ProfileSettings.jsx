@@ -27,9 +27,9 @@ const ProfileSettings = () => {
   const [settings, setSettings] = useState({
     // Profile Settings
     displayName: user?.displayName || '',
-    bio: 'Pet lover and enthusiast. Always looking for the best products for my furry friends.',
-    location: 'New York, NY',
-    website: 'https://petlover.com',
+    bio: '',
+    location: '',
+    website: '',
     
     // Privacy Settings
     profileVisibility: 'public',

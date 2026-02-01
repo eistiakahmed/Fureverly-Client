@@ -1,8 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import logo from '../../assets/logo.png';
 import { Link, NavLink } from 'react-router';
 import { IoMdLogIn } from 'react-icons/io';
 import { AuthContext } from '../../Context/AuthContext';
+import { useTheme } from '../../Context/ThemeContext';
 import {
   LogOut,
   PackageSearch,
@@ -18,23 +19,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const { theme, toggleTheme, isDark } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const signOut = () => {
     logOut()
       .then(() => toast.success('Logged out successfully!'))
       .catch((err) => toast.error(err.message));
-  };
-
-  useEffect(() => {
-    const html = document.querySelector('html');
-    html.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
   const toggleMobileMenu = () => {
@@ -158,28 +149,28 @@ const Navbar = () => {
                 className="p-2.5 rounded-full bg-gray-100 dark:bg-gray-800 text-[#092052] dark:text-[#F5B22C] hover:bg-[#F5B22C]/10 dark:hover:bg-[#F5B22C]/10 transition-all duration-300 hover:scale-110"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
-                title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+                title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
               >
                 <AnimatePresence mode="wait">
-                  {theme === 'light' ? (
+                  {isDark ? (
+                    <motion.div
+                      key="sun"
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: 90, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <FaSun size={18} />
+                    </motion.div>
+                  ) : (
                     <motion.div
                       key="moon"
                       initial={{ rotate: -90, opacity: 0 }}
                       animate={{ rotate: 0, opacity: 1 }}
                       exit={{ rotate: 90, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: 0.2 }}
                     >
                       <FaMoon size={18} />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="sun"
-                      initial={{ rotate: 90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: -90, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <FaSun size={18} />
                     </motion.div>
                   )}
                 </AnimatePresence>

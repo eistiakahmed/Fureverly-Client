@@ -10,11 +10,11 @@ const ProductCard = ({ product }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  // Generate random rating if not provided (for demo purposes)
-  const rating = product.rating || (Math.random() * 2 + 3).toFixed(1);
-  const price = product.price || `$${Math.floor(Math.random() * 500 + 100)}`;
+  // Use actual product data or reasonable defaults
+  const rating = product.rating || 0;
+  const price = product.price || 'Contact for price';
   const status = product.status || 'Available';
-  const datePosted = product.datePosted || new Date().toLocaleDateString();
+  const datePosted = product.datePosted || (product.createdAt ? new Date(product.createdAt).toLocaleDateString() : 'Recently posted');
 
   // Render star rating
   const renderStars = (rating) => {
@@ -142,7 +142,7 @@ const ProductCard = ({ product }) => {
               </span>
             </div>
             <div className="text-xs text-gray-500 dark:text-gray-400">
-              {Math.floor(Math.random() * 50 + 10)} reviews
+              {product.reviewCount || 0} reviews
             </div>
           </div>
         </div>

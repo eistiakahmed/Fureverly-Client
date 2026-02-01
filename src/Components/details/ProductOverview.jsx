@@ -17,9 +17,9 @@ const ProductOverview = ({ product, onAdopt, onBuy, onContact }) => {
     status = 'Available'
   } = product;
 
-  // Generate random rating for demo
-  const rating = 4.5;
-  const reviewCount = Math.floor(Math.random() * 50 + 10);
+  // Use actual product data
+  const rating = product.rating || 0;
+  const reviewCount = product.reviewCount || 0;
 
   const renderStars = (rating) => {
     const stars = [];

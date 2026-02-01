@@ -13,8 +13,8 @@ const ProfileCard = ({
   className = ''
 }) => {
   const {
-    bio = 'Pet lover and enthusiast.',
-    location = 'Location not specified',
+    bio = '',
+    location = '',
     isVerified = false,
     profileCompletion = 0,
     joinDate = new Date()

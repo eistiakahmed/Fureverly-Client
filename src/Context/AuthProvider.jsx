@@ -56,12 +56,34 @@ const AuthProvider = ({children}) => {
     return sendEmailVerification(auth.currentUser);
   };
 
-  // Simple role assignment - all authenticated users are regular users
+  // Fetch user role from backend
   const fetchUserRole = async (userEmail) => {
     if (!userEmail) return;
     setRoleLoading(true);
-    setUserRole('user');
-    setRoleLoading(false);
+    
+    try {
+      const token = await auth.currentUser?.getIdToken();
+      const response = await fetch(`${API_BASE_URL}/user/role`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const userData = await response.json();
+        setUserRole(userData.role || 'user');
+        console.log('User role fetched:', userData.role);
+      } else {
+        console.error('Failed to fetch user role:', response.status);
+        setUserRole('user'); // Default to user if fetch fails
+      }
+    } catch (error) {
+      console.error('Error fetching user role:', error);
+      setUserRole('user'); // Default to user if error occurs
+    } finally {
+      setRoleLoading(false);
+    }
   };
 
   // Save user to backend after registration/login

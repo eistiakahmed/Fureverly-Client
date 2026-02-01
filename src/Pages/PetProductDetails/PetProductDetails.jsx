@@ -31,13 +31,8 @@ const PetProductDetails = () => {
     price: Price, // Normalize price field
   } = data;
 
-  // Create images array (in production, this would come from the API)
-  const productImages = [
-    image,
-    // Add more images for gallery demo
-    image, // Duplicate for demo
-    image, // Duplicate for demo
-  ];
+  // Create images array - use actual product images or single image
+  const productImages = data.images && data.images.length > 0 ? data.images : [image];
 
   const handleAdopt = () => {
     if (!user) {
@@ -114,11 +109,18 @@ const PetProductDetails = () => {
     console.log('Submitting order:', formData);
 
     try {
-      // First, try the main API endpoint
+      // Get Firebase token for authorization
+      const token = await user?.getIdToken();
+      if (!token) {
+        throw new Error('Authentication required. Please log in again.');
+      }
+
+      // First, try the main API endpoint with proper authorization
       let response = await fetch(`https://fureverly-server.vercel.app/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Add missing authorization header
         },
         body: JSON.stringify(formData),
       });

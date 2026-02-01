@@ -37,8 +37,8 @@ const MyProfile = () => {
 
   // Profile data from backend
   const [profileData, setProfileData] = useState({
-    bio: 'Pet lover and enthusiast. Always looking for the best products for my furry friends.',
-    location: 'New York, NY',
+    bio: '',
+    location: '',
     phone: '',
     website: '',
     joinDate: new Date(),
@@ -83,8 +83,8 @@ const MyProfile = () => {
         
         // Fallback to basic profile data from Firebase user
         const fallbackProfile = {
-          bio: 'Pet lover and enthusiast. Welcome to Fureverly!',
-          location: 'Location not specified',
+          bio: '',
+          location: '',
           phone: '',
           website: '',
           joinDate: user?.metadata?.creationTime ? new Date(user.metadata.creationTime) : new Date(),

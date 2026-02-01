@@ -478,16 +478,7 @@ const PetsAndSupplies = () => {
           </motion.div>
         )}
 
-        {/* Debug Info - Remove in production */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mb-4 p-4 bg-yellow-100 dark:bg-yellow-900/20 rounded-lg">
-            <p className="text-sm">
-              Debug: Loading={loading.toString()}, Error={error || 'none'}, 
-              AllProducts={allProducts.length}, Filtered={filteredProducts.length}, 
-              Displayed={displayedProducts.length}
-            </p>
-          </div>
-        )}
+     
 
         {/* Products Grid */}
         <div>
